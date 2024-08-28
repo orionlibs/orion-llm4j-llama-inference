@@ -1,6 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
-import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFType;
+import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.FloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q4_0FloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q8_0FloatTensor;

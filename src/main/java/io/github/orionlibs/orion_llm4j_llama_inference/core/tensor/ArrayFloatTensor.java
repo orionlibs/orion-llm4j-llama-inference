@@ -1,6 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.tensor;
 
-import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFType;
+import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
 import java.util.Arrays;
 import jdk.incubator.vector.FloatVector;
 import jdk.incubator.vector.VectorSpecies;

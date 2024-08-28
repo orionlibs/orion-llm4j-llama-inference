@@ -1,6 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
-import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.Pair;
+import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;

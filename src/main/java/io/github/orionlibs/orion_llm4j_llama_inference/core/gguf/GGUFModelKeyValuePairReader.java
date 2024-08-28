@@ -1,6 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.gguf;
 
-import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.Pair;
+import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 

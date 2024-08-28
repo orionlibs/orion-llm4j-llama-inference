@@ -7,7 +7,7 @@ import io.github.orionlibs.orion_llm4j_llama_inference.core.Tokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.Vocabulary;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.Weights;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.Pair;
+import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.GGUFTensorEntry;
 import java.io.IOException;
 import java.nio.FloatBuffer;

@@ -2,7 +2,7 @@ package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.FloatTensor;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.Parallel;
+import io.github.orionlibs.orion_llm4j_inference.core.utils.Parallel;
 import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Set;

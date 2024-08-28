@@ -1,5 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.sampler;
 
+import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 

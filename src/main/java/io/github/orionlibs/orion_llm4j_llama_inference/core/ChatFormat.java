@@ -1,5 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
+import io.github.orionlibs.orion_llm4j_inference.core.Message;
 import java.util.List;
 import java.util.Set;
 

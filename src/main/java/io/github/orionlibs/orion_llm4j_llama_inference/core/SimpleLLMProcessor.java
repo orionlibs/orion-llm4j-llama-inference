@@ -1,31 +1,27 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
+import io.github.orionlibs.orion_llm4j_inference.core.Configuration;
+import io.github.orionlibs.orion_llm4j_inference.core.LLMProcessor;
+import io.github.orionlibs.orion_llm4j_inference.core.Response;
+import io.github.orionlibs.orion_llm4j_inference.core.State;
 import io.github.orionlibs.orion_llm4j_inference.core.Weights;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.Sampler;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
+import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Parallel;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
 import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Set;
 import java.util.function.IntConsumer;
 
-public abstract class LLMProcessor
+public abstract class SimpleLLMProcessor extends LLMProcessor
 {
-    protected Configuration configuration;
-    protected SimpleTokenizer tokenizer;
-    protected Weights weights;
     private Response response;
 
 
-    public LLMProcessor(Configuration configuration, SimpleTokenizer tokenizer, Weights weights)
+    public SimpleLLMProcessor(Configuration configuration, SimpleTokenizer tokenizer, Weights weights)
     {
-        this.configuration = configuration;
-        this.tokenizer = tokenizer;
-        this.weights = weights;
+        super(configuration, tokenizer, weights);
     }
-
-
-    public abstract State createNewState();
 
 
     static void rmsnorm(SimpleFloatTensor out, SimpleFloatTensor x, FloatBuffer weight, int size, float rmsNormEps)
@@ -41,11 +37,11 @@ public abstract class LLMProcessor
     }
 
 
-    static SimpleFloatTensor forward(LLMProcessor model, State state, int token, int position)
+    static SimpleFloatTensor forward(LLMProcessor model, SimpleState state, int token, int position)
     {
         // a few convenience variables
-        Configuration config = model.configuration;
-        Weights weights = model.weights;
+        Configuration config = model.getConfiguration();
+        Weights weights = model.getWeights();
         int dim = config.dim;
         int headSize = config.headSize;
         int kvDim = (config.dim * config.numberOfKeyValueHeads) / config.numberOfHeads;
@@ -149,6 +145,9 @@ public abstract class LLMProcessor
     }
 
 
+    public abstract SimpleState createNewState();
+
+
     /**
      * LLM generation entry point, ingest prompt tokens and generates new tokens.
      *
@@ -167,21 +166,23 @@ public abstract class LLMProcessor
      * @param onTokenGenerated callback, if non-null, it's called every time a token is inferred e.g. it's not called when ingesting prompt tokens
      * @return Response including the actual model response and list of generated/inferred tokens, including the stop token, if any e.g. does not include any token from the prompt
      */
+    @Override
     public Response generateTokens(LLMProcessor model, State state, int startPosition, List<Integer> promptTokens, Set<Integer> stopTokens, int maxTokens, Sampler sampler,
                     IntConsumer onTokenGenerated)
     {
+        SimpleState simpleState = (SimpleState)state;
         response = new Response(maxTokens);
         long startNanos = System.nanoTime();
-        if(maxTokens < 0 || model.configuration.contextLength < maxTokens)
+        if(maxTokens < 0 || model.getConfiguration().contextLength < maxTokens)
         {
-            maxTokens = model.configuration.contextLength;
+            maxTokens = model.getConfiguration().contextLength;
         }
-        int token = state.latestToken; // BOS?
+        int token = simpleState.latestToken; // BOS?
         int nextToken;
         int promptIndex = 0;
         for(int position = startPosition; position < maxTokens; ++position)
         {
-            forward(model, state, token, position);
+            forward(model, simpleState, token, position);
             if(promptIndex < promptTokens.size())
             {
                 // Force-pick token from prompt.
@@ -189,7 +190,7 @@ public abstract class LLMProcessor
             }
             else
             {
-                nextToken = sampler.sampleToken(state.logits);
+                nextToken = sampler.sampleToken(simpleState.logits);
                 response.addResponseToken(nextToken);
                 if(onTokenGenerated != null)
                 {
@@ -200,7 +201,7 @@ public abstract class LLMProcessor
                     break;
                 }
             }
-            state.latestToken = token = nextToken;
+            simpleState.latestToken = token = nextToken;
         }
         long elapsedNanos = System.nanoTime() - startNanos;
         int numberOfTokensGenerated = promptIndex + response.getResponseTokens().size();

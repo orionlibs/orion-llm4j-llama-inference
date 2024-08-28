@@ -2,7 +2,7 @@ package io.github.orionlibs.orion_llm4j_llama_inference;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.github.orionlibs.orion_llm4j_llama_inference.core.Response;
+import io.github.orionlibs.orion_llm4j_inference.core.Response;
 import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

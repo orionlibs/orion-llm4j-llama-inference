@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.orionlibs</groupId>
-    <artifactId>project-name</artifactId>
+    <artifactId>orion-llm4j-llama-inference</artifactId>
     <version>0.0.1</version>
-    <name>name</name>
-    <description>description</description>
-    <url>https://github.com/orionlibs/project-name</url>
+    <name>Orion LLM4J Llama Inference</name>
+    <description>Java library running Llama-like LLMs directly from the model files</description>
+    <url>https://github.com/orionlibs/orion-llm4j-llama-inference</url>
     
     
     <properties>
@@ -17,9 +17,9 @@
 
 
     <scm>
-        <url>https://github.com/orionlibs/project-name</url>
-        <connection>scm:git:https://github.com/orionlibs/project-name.git</connection>
-        <developerConnection>scm:git:ssh://github.com/orionlibs/project-name.git</developerConnection>
+        <url>https://github.com/orionlibs/orion-llm4j-llama-inference</url>
+        <connection>scm:git:https://github.com/orionlibs/orion-llm4j-llama-inference.git</connection>
+        <developerConnection>scm:git:ssh://github.com/orionlibs/orion-llm4j-llama-inference.git</developerConnection>
     </scm>
 
 
@@ -48,6 +48,13 @@
 
                 <configuration>
                     <release>${maven.compiler.target}</release>
+
+
+                    <compilerArgs>
+                        <arg>--enable-preview</arg>
+                        <arg>--add-modules</arg>
+                        <arg>jdk.incubator.vector</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -62,6 +69,9 @@
                     <systemPropertyVariables>
                         <java.locale.providers>COMPAT,CLDR,SPI,JRE</java.locale.providers>
                     </systemPropertyVariables>
+
+
+                    <argLine>--add-modules jdk.incubator.vector</argLine>
                 </configuration>
             </plugin>
             
@@ -239,6 +249,13 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.orionlibs</groupId>
+            <artifactId>orion-llm4j-inference</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

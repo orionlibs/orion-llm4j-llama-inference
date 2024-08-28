@@ -8,7 +8,7 @@ import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.ChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleState;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SamplerSelector;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaProcessorSimple;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaSimpleModelLoader;
@@ -96,7 +96,7 @@ public class LLM
             float temperature = (float)options.getOptionValue("temperature");
             float randomness = (float)options.getOptionValue("randomness");
             model = new LlamaSimpleModelLoader().loadModel(llmModelPath, (int)options.getOptionValue("maximumTokensToProduce"));
-            sampler = SamplerSelector.selectSampler(model.getConfiguration().vocabularySize, temperature, randomness);
+            sampler = new SimpleSamplerSelector().selectSampler(model.getConfiguration().vocabularySize, temperature, randomness);
             isModelLoaded = true;
         }
     }

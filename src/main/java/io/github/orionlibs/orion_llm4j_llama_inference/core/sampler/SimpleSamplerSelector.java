@@ -1,12 +1,14 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.sampler;
 
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
+import io.github.orionlibs.orion_llm4j_inference.core.sampler.SamplerSelector;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 
-public class SamplerSelector
+public class SimpleSamplerSelector implements SamplerSelector
 {
-    public static Sampler selectSampler(int vocabularySize, float temperature, float topp)
+    @Override
+    public Sampler selectSampler(int vocabularySize, float temperature, float topp)
     {
         Sampler sampler;
         if(temperature == 0.0f)
@@ -27,7 +29,7 @@ public class SamplerSelector
             else
             {
                 // top-p (nucleus) sampling, clamping the least likely tokens to zero
-                innerSampler = new ToppSampler(vocabularySize, topp, rng);
+                innerSampler = new SimpleToppSampler(vocabularySize, topp, rng);
             }
             sampler = logits -> {
                 // apply the temperature to the logits

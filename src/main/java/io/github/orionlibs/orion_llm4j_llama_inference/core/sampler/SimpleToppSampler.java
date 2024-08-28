@@ -1,18 +1,18 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.sampler;
 
-import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
+import io.github.orionlibs.orion_llm4j_inference.core.sampler.ToppSampler;
 import io.github.orionlibs.orion_llm4j_inference.core.tensor.FloatTensor;
 import java.util.Comparator;
 import java.util.random.RandomGenerator;
 
-public final class ToppSampler implements Sampler
+public final class SimpleToppSampler implements ToppSampler
 {
     final int[] indices;
     final float topp;
     final RandomGenerator rng;
 
 
-    public ToppSampler(int maxNumberOfElements, float topp, RandomGenerator rng)
+    public SimpleToppSampler(int maxNumberOfElements, float topp, RandomGenerator rng)
     {
         this.indices = new int[maxNumberOfElements];
         this.topp = topp;
@@ -20,15 +20,8 @@ public final class ToppSampler implements Sampler
     }
 
 
-    private static void swap(int[] array, int from, int to)
-    {
-        int tmp = array[from];
-        array[from] = array[to];
-        array[to] = tmp;
-    }
-
-
-    static void siftDown(int[] array, int from, int n, Comparator<Integer> comparator)
+    @Override
+    public void siftDown(int[] array, int from, int n, Comparator<Integer> comparator)
     {
         int prev = from, next;
         while((next = 2 * prev + 1) < n)
@@ -40,7 +33,7 @@ public final class ToppSampler implements Sampler
             }
             if(comparator.compare(array[next], array[prev]) < 0)
             {
-                swap(array, prev, next);
+                ToppSampler.swap(array, prev, next);
                 prev = next;
             }
             else
@@ -87,7 +80,7 @@ public final class ToppSampler implements Sampler
         int lastIndex = 0;
         for(int i = n0 - 1; i >= 0; i--)
         {
-            swap(indices, 0, i);
+            ToppSampler.swap(indices, 0, i);
             cumulativeProb += logits.getFloat(indices[i]);
             if(cumulativeProb > topp)
             {

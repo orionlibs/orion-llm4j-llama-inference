@@ -1,4 +1,4 @@
-orion-llm4j.temperature=0.1
-orion-llm4j.randomness=0.95
-orion-llm4j.maximum.tokens.to.produce=512
-orion-llm4j.interactive.chat=false
+orion-llm4j-llama-inference.temperature=0.1
+orion-llm4j-llama-inference.randomness=0.95
+orion-llm4j-llama-inference.maximum.tokens.to.produce=512
+orion-llm4j-llama-inference.interactive.chat=false

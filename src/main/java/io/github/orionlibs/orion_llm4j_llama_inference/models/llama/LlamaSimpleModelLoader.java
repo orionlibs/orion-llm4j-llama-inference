@@ -3,12 +3,12 @@ package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
 import io.github.orionlibs.orion_llm4j_inference.core.Configuration;
 import io.github.orionlibs.orion_llm4j_inference.core.Vocabulary;
 import io.github.orionlibs.orion_llm4j_inference.core.Weights;
+import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.RotaryPositionEmbeddings;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleModelLoader;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.GGUFTensorEntry;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;
@@ -31,7 +31,7 @@ public class LlamaSimpleModelLoader extends SimpleModelLoader
 
 
     @Override
-    public LlamaProcessorSimple loadModel(Path ggufPath, int contextLength) throws IOException
+    public SimpleLlamaProcessor loadModel(Path ggufPath, int contextLength) throws IOException
     {
         GGUFModel gguf = GGUFModel.loadModel(ggufPath);
         Map<String, Object> metadata = gguf.getMetadata();
@@ -82,7 +82,7 @@ public class LlamaSimpleModelLoader extends SimpleModelLoader
                         FloatBuffer.wrap(ropeFreqsImag),
                         loadQuantized(tensorEntries.get("output.weight"))
         );
-        return new LlamaProcessorSimple(config, tokenizer, qw);
+        return new SimpleLlamaProcessor(config, tokenizer, qw);
     }
 
 

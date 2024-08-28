@@ -1,17 +1,17 @@
 package io.github.orionlibs.orion_llm4j_llama_inference;
 
 import io.github.orionlibs.orion_llm4j_inference.config.ConfigurationService;
+import io.github.orionlibs.orion_llm4j_inference.core.ChatFormat;
 import io.github.orionlibs.orion_llm4j_inference.core.Message;
 import io.github.orionlibs.orion_llm4j_inference.core.Response;
 import io.github.orionlibs.orion_llm4j_inference.core.Role;
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.ChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaChatFormat;
-import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaProcessorSimple;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaSimpleModelLoader;
+import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.SimpleLlamaProcessor;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.LLMOptionsBuilder;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,7 @@ public class LLM
     private static final String FEATURE_CONFIGURATION_FILE = "/io/github/orionlibs/orion_llm4j_llama_inference/configuration/orion-feature-configuration.prop";
     private LLMOptions options;
     private Sampler sampler;
-    private LlamaProcessorSimple model;
+    private SimpleLlamaProcessor model;
     private boolean isModelLoaded;
 
 
@@ -102,7 +102,7 @@ public class LLM
     }
 
 
-    private Response runPrompt(LlamaProcessorSimple model, Sampler sampler, LLMOptions options, String prompt)
+    private Response runPrompt(SimpleLlamaProcessor model, Sampler sampler, LLMOptions options, String prompt)
     {
         SimpleState state = model.createNewState();
         ChatFormat chatFormat = new LlamaChatFormat(model.getTokenizer());

@@ -2,9 +2,9 @@ package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
 import io.github.orionlibs.orion_llm4j_inference.core.ModelLoader;
 import io.github.orionlibs.orion_llm4j_inference.core.Vocabulary;
+import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
 import io.github.orionlibs.orion_llm4j_inference.core.tensor.FloatTensor;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q4_0SimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q8_0SimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;

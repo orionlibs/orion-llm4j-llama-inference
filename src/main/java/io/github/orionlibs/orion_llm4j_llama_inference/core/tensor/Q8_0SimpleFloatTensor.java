@@ -13,6 +13,7 @@ import jdk.incubator.vector.VectorSpecies;
 
 public final class Q8_0SimpleFloatTensor extends SimpleFloatTensor
 {
+    public static final ValueLayout.OfShort JAVA_SHORT_LE = ValueLayout.JAVA_SHORT.withOrder(ByteOrder.LITTLE_ENDIAN);
     final int size;
     final MemorySegment memorySegment;
 
@@ -21,64 +22,6 @@ public final class Q8_0SimpleFloatTensor extends SimpleFloatTensor
     {
         this.size = size;
         this.memorySegment = memorySegment;
-    }
-
-
-    @Override
-    public int size()
-    {
-        return size;
-    }
-
-
-    @Override
-    public void setFloat(int index, float value)
-    {
-        throw new UnsupportedOperationException("setFloat");
-    }
-
-
-    @Override
-    public FloatVector getFloatVector(VectorSpecies<Float> species, int index)
-    {
-        throw new UnsupportedOperationException("getFloatVector");
-    }
-
-
-    @Override
-    public GGUFType type()
-    {
-        return GGUFType.Q8_0;
-    }
-
-
-    @Override
-    public float getFloat(int index)
-    {
-        assert 0 <= index && index < size;
-        int blockIndex = index / GGUFType.Q8_0.getBlockSize();
-        int withinBlockIndex = index % GGUFType.Q8_0.getBlockSize();
-        int blockOffset = blockIndex * GGUFType.Q8_0.getTypeSize();
-        byte quant = memorySegment.get(ValueLayout.JAVA_BYTE, blockOffset + Float16.BYTES + withinBlockIndex);
-        float scale = Float.float16ToFloat(memorySegment.get(JAVA_SHORT_LE, blockOffset));
-        return quant * scale;
-    }
-
-
-    public static final ValueLayout.OfShort JAVA_SHORT_LE = ValueLayout.JAVA_SHORT.withOrder(ByteOrder.LITTLE_ENDIAN);
-
-
-    @Override
-    public float dot(int thisOffset, FloatTensor that, int thatOffset, int size)
-    {
-        if(SimpleFloatTensor.USE_VECTOR_API)
-        {
-            return vectorDot(this, thisOffset, that, thatOffset, size);
-        }
-        else
-        {
-            return that.scalarDot(this, thisOffset, that, thatOffset, size);
-        }
     }
 
 
@@ -137,5 +80,60 @@ public final class Q8_0SimpleFloatTensor extends SimpleFloatTensor
             result += that.scalarDot(thiz, thisOffset + j, that, thatOffset + j, size - j);
         }
         return result;
+    }
+
+
+    @Override
+    public int size()
+    {
+        return size;
+    }
+
+
+    @Override
+    public void setFloat(int index, float value)
+    {
+        throw new UnsupportedOperationException("setFloat");
+    }
+
+
+    @Override
+    public FloatVector getFloatVector(VectorSpecies<Float> species, int index)
+    {
+        throw new UnsupportedOperationException("getFloatVector");
+    }
+
+
+    @Override
+    public GGUFType type()
+    {
+        return GGUFType.Q8_0;
+    }
+
+
+    @Override
+    public float getFloat(int index)
+    {
+        assert 0 <= index && index < size;
+        int blockIndex = index / GGUFType.Q8_0.getBlockSize();
+        int withinBlockIndex = index % GGUFType.Q8_0.getBlockSize();
+        int blockOffset = blockIndex * GGUFType.Q8_0.getTypeSize();
+        byte quant = memorySegment.get(ValueLayout.JAVA_BYTE, blockOffset + Float16.BYTES + withinBlockIndex);
+        float scale = Float.float16ToFloat(memorySegment.get(JAVA_SHORT_LE, blockOffset));
+        return quant * scale;
+    }
+
+
+    @Override
+    public float dot(int thisOffset, FloatTensor that, int thatOffset, int size)
+    {
+        if(SimpleFloatTensor.USE_VECTOR_API)
+        {
+            return vectorDot(this, thisOffset, that, thatOffset, size);
+        }
+        else
+        {
+            return that.scalarDot(this, thisOffset, that, thatOffset, size);
+        }
     }
 }

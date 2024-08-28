@@ -6,9 +6,9 @@ import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleLLMProcessor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 
-public final class LlamaProcessorSimple extends SimpleLLMProcessor
+public final class SimpleLlamaProcessor extends SimpleLLMProcessor
 {
-    public LlamaProcessorSimple(Configuration configuration, SimpleTokenizer tokenizer, Weights weights)
+    public SimpleLlamaProcessor(Configuration configuration, SimpleTokenizer tokenizer, Weights weights)
     {
         super(configuration, tokenizer, weights);
     }

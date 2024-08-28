@@ -1,8 +1,8 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
 
+import io.github.orionlibs.orion_llm4j_inference.core.ChatFormat;
 import io.github.orionlibs.orion_llm4j_inference.core.Message;
 import io.github.orionlibs.orion_llm4j_inference.core.Role;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.ChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import java.util.ArrayList;
 import java.util.List;

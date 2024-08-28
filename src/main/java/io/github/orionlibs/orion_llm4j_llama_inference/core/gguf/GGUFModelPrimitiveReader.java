@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
-final class GGUFModelPrimitiveReader
+public final class GGUFModelPrimitiveReader
 {
     private final ByteBuffer BB_1 = ByteBuffer.allocate(Byte.BYTES).order(ByteOrder.LITTLE_ENDIAN);
     private final ByteBuffer BB_2 = ByteBuffer.allocate(Short.BYTES).order(ByteOrder.LITTLE_ENDIAN);
@@ -13,7 +13,7 @@ final class GGUFModelPrimitiveReader
     private final ByteBuffer BB_8 = ByteBuffer.allocate(Long.BYTES).order(ByteOrder.LITTLE_ENDIAN);
 
 
-    byte readByte(FileChannel fileChannel) throws IOException
+    public byte readByte(FileChannel fileChannel) throws IOException
     {
         int bytesRead = fileChannel.read(BB_1);
         assert bytesRead == 1;
@@ -21,13 +21,13 @@ final class GGUFModelPrimitiveReader
     }
 
 
-    boolean readBoolean(FileChannel fileChannel) throws IOException
+    public boolean readBoolean(FileChannel fileChannel) throws IOException
     {
         return readByte(fileChannel) != 0;
     }
 
 
-    short readShort(FileChannel fileChannel) throws IOException
+    public short readShort(FileChannel fileChannel) throws IOException
     {
         int bytesRead = fileChannel.read(BB_2);
         assert bytesRead == 2;
@@ -35,7 +35,7 @@ final class GGUFModelPrimitiveReader
     }
 
 
-    int readInt(FileChannel fileChannel) throws IOException
+    public int readInt(FileChannel fileChannel) throws IOException
     {
         int bytesRead = fileChannel.read(BB_4);
         assert bytesRead == 4;
@@ -43,7 +43,7 @@ final class GGUFModelPrimitiveReader
     }
 
 
-    long readLong(FileChannel fileChannel) throws IOException
+    public long readLong(FileChannel fileChannel) throws IOException
     {
         int bytesRead = fileChannel.read(BB_8);
         assert bytesRead == 8;
@@ -51,13 +51,13 @@ final class GGUFModelPrimitiveReader
     }
 
 
-    float readFloat(FileChannel fileChannel) throws IOException
+    public float readFloat(FileChannel fileChannel) throws IOException
     {
         return Float.intBitsToFloat(readInt(fileChannel));
     }
 
 
-    double readDouble(FileChannel fileChannel) throws IOException
+    public double readDouble(FileChannel fileChannel) throws IOException
     {
         return Double.longBitsToDouble(readLong(fileChannel));
     }

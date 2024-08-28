@@ -1,6 +1,7 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.tensor;
 
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
+import io.github.orionlibs.orion_llm4j_inference.core.tensor.FloatTensor;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Float16;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
@@ -11,19 +12,19 @@ import jdk.incubator.vector.VectorOperators;
 import jdk.incubator.vector.VectorSpecies;
 
 /**
- * {@link FloatTensor} quantized in the {@link GGUFType#Q4_0} format.
+ * {@link SimpleFloatTensor} quantized in the {@link GGUFType#Q4_0} format.
  * <p>
- * This tensor implementation is not compatible with {@link FloatTensor}, but
+ * This tensor implementation is not compatible with {@link SimpleFloatTensor}, but
  * {@link #dot(int, FloatTensor, int, int)} has a vectorized implementation that is used when
- * the second argument implements {@link FloatTensor}.
+ * the second argument implements {@link SimpleFloatTensor}.
  */
-public final class Q4_0FloatTensor extends FloatTensor
+public final class Q4_0SimpleFloatTensor extends SimpleFloatTensor
 {
     final int size;
     final MemorySegment memorySegment;
 
 
-    public Q4_0FloatTensor(int size, MemorySegment memorySegment)
+    public Q4_0SimpleFloatTensor(int size, MemorySegment memorySegment)
     {
         this.size = size;
         this.memorySegment = memorySegment;
@@ -45,7 +46,7 @@ public final class Q4_0FloatTensor extends FloatTensor
 
 
     @Override
-    FloatVector getFloatVector(VectorSpecies<Float> species, int index)
+    public FloatVector getFloatVector(VectorSpecies<Float> species, int index)
     {
         throw new UnsupportedOperationException("getFloatVector");
     }
@@ -83,18 +84,18 @@ public final class Q4_0FloatTensor extends FloatTensor
     @Override
     public float dot(int thisOffset, FloatTensor that, int thatOffset, int size)
     {
-        if(FloatTensor.USE_VECTOR_API)
+        if(SimpleFloatTensor.USE_VECTOR_API)
         {
             return vectorDot(this, thisOffset, that, thatOffset, size);
         }
         else
         {
-            return FloatTensor.scalarDot(this, thisOffset, that, thatOffset, size);
+            return that.scalarDot(this, thisOffset, that, thatOffset, size);
         }
     }
 
 
-    private static float vectorDot(Q4_0FloatTensor thiz, int thisOffset, FloatTensor that, int thatOffset, int size)
+    private static float vectorDot(Q4_0SimpleFloatTensor thiz, int thisOffset, FloatTensor that, int thatOffset, int size)
     {
         float result = 0f;
         int j = 0;
@@ -103,7 +104,7 @@ public final class Q4_0FloatTensor extends FloatTensor
         int alignmentBound = Math.min(size, -thisOffset & (GGUFType.Q4_0.getBlockSize() - 1));
         if(alignmentBound > 0)
         {
-            result += FloatTensor.scalarDot(thiz, thisOffset, that, thatOffset, alignmentBound);
+            result += that.scalarDot(thiz, thisOffset, that, thatOffset, alignmentBound);
             j += alignmentBound;
         }
         assert (thisOffset + j) % GGUFType.Q4_0.getBlockSize() == 0;
@@ -148,7 +149,7 @@ public final class Q4_0FloatTensor extends FloatTensor
         // Remaining entries.
         if(j < size)
         {
-            result += FloatTensor.scalarDot(thiz, thisOffset + j, that, thatOffset + j, size - j);
+            result += that.scalarDot(thiz, thisOffset + j, that, thatOffset + j, size - j);
         }
         return result;
     }

@@ -1,25 +1,26 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.tensor;
 
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
+import io.github.orionlibs.orion_llm4j_inference.core.tensor.FloatTensor;
 import java.util.Arrays;
 import jdk.incubator.vector.FloatVector;
 import jdk.incubator.vector.VectorSpecies;
 
-public final class ArrayFloatTensor extends FloatTensor
+public final class ArraySimpleFloatTensor extends SimpleFloatTensor
 {
     final float[] values;
 
 
-    ArrayFloatTensor(float[] values)
+    ArraySimpleFloatTensor(float[] values)
     {
         this.values = values;
     }
 
 
-    public static FloatTensor allocate(int... dims)
+    public static SimpleFloatTensor allocate(int... dims)
     {
         int numberOfElements = FloatTensor.numberOfElements(dims);
-        return new ArrayFloatTensor(new float[numberOfElements]);
+        return new ArraySimpleFloatTensor(new float[numberOfElements]);
     }
 
 
@@ -52,7 +53,7 @@ public final class ArrayFloatTensor extends FloatTensor
 
 
     @Override
-    public FloatTensor fillInPlace(int thisOffset, int size, float value)
+    public SimpleFloatTensor fillInPlace(int thisOffset, int size, float value)
     {
         Arrays.fill(values, thisOffset, thisOffset + size, value);
         return this;

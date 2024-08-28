@@ -1,6 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.sampler;
 
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.FloatTensor;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
 import java.util.Comparator;
 import java.util.random.RandomGenerator;
 
@@ -51,7 +51,7 @@ public final class ToppSampler implements Sampler
 
 
     @Override
-    public int sampleToken(FloatTensor logits)
+    public int sampleToken(SimpleFloatTensor logits)
     {
         // top-p sampling (or "nucleus sampling") samples from the smallest set of
         // tokens that exceed probability topp. This way we never sample tokens that

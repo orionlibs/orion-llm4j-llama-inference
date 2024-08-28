@@ -1,7 +1,8 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.gguf;
 
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.FloatTensor;
+import io.github.orionlibs.orion_llm4j_inference.core.tensor.FloatTensor;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.GGUFTensorInfo;
 import java.io.IOException;

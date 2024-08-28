@@ -1,9 +1,10 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.FloatTensor;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q4_0FloatTensor;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q8_0FloatTensor;
+import io.github.orionlibs.orion_llm4j_inference.core.tensor.FloatTensor;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q4_0SimpleFloatTensor;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q8_0SimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.GGUFTensorEntry;
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -43,22 +44,22 @@ public abstract class ModelLoader
     protected abstract Tokenizer createTokenizer(Map<String, Object> metadata, Vocabulary vocabulary);
 
 
-    public static FloatTensor loadQuantized(GGUFTensorEntry entry)
+    public static SimpleFloatTensor loadQuantized(GGUFTensorEntry entry)
     {
         GGUFType ggmlType = entry.ggmlType();
         return switch(ggmlType)
         {
             //case F32 -> new F32FloatTensor(FloatTensor.numberOfElements(entry.shape()), entry.memorySegment());
-            case Q8_0 -> new Q8_0FloatTensor(FloatTensor.numberOfElements(entry.shape()), entry.memorySegment());
-            case Q4_0 -> new Q4_0FloatTensor(FloatTensor.numberOfElements(entry.shape()), entry.memorySegment());
+            case Q8_0 -> new Q8_0SimpleFloatTensor(FloatTensor.numberOfElements(entry.shape()), entry.memorySegment());
+            case Q4_0 -> new Q4_0SimpleFloatTensor(FloatTensor.numberOfElements(entry.shape()), entry.memorySegment());
             default -> throw new UnsupportedOperationException("Quantization format " + ggmlType);
         };
     }
 
 
-    public static FloatTensor[] loadArrayOfQuantized(int size, IntFunction<GGUFTensorEntry> getTensorEntry)
+    public static SimpleFloatTensor[] loadArrayOfQuantized(int size, IntFunction<GGUFTensorEntry> getTensorEntry)
     {
-        FloatTensor[] array = new FloatTensor[size];
+        SimpleFloatTensor[] array = new SimpleFloatTensor[size];
         for(int i = 0; i < size; i++)
         {
             array[i] = loadQuantized(getTensorEntry.apply(i));

@@ -1,7 +1,7 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.Sampler;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.FloatTensor;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Parallel;
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -27,7 +27,7 @@ public abstract class LLMProcessor
     public abstract State createNewState();
 
 
-    static void rmsnorm(FloatTensor out, FloatTensor x, FloatBuffer weight, int size, float rmsNormEps)
+    static void rmsnorm(SimpleFloatTensor out, SimpleFloatTensor x, FloatBuffer weight, int size, float rmsNormEps)
     {
         // calculate sum of squares
         float ss = x.reduce(0, size, 0f, (acc, xi) -> acc + xi * xi);
@@ -40,7 +40,7 @@ public abstract class LLMProcessor
     }
 
 
-    static FloatTensor forward(LLMProcessor model, State state, int token, int position)
+    static SimpleFloatTensor forward(LLMProcessor model, State state, int token, int position)
     {
         // a few convenience variables
         Configuration config = model.configuration;
@@ -70,7 +70,7 @@ public abstract class LLMProcessor
                 int rotn = i < kvDim ? 2 : 1; // how many vectors? 2 = q & k, 1 = q only
                 for(int v = 0; v < rotn; v++)
                 {
-                    FloatTensor vec = v == 0 ? state.q : state.k; // the vector to rotate (query or key)
+                    SimpleFloatTensor vec = v == 0 ? state.q : state.k; // the vector to rotate (query or key)
                     float v0 = vec.getFloat(i);
                     float v1 = vec.getFloat(i + 1);
                     vec.setFloat(i, v0 * fcr - v1 * fci);

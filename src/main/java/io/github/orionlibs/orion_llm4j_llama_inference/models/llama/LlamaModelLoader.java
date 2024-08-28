@@ -3,9 +3,9 @@ package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.Configuration;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.ModelLoader;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.RotaryPositionEmbeddings;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.Tokenizer;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.Vocabulary;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.Weights;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
+import io.github.orionlibs.orion_llm4j_inference.core.Vocabulary;
+import io.github.orionlibs.orion_llm4j_inference.core.Weights;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.GGUFTensorEntry;
@@ -36,7 +36,7 @@ public class LlamaModelLoader extends ModelLoader
         GGUFModel gguf = GGUFModel.loadModel(ggufPath);
         Map<String, Object> metadata = gguf.getMetadata();
         Vocabulary vocabulary = loadVocabulary(metadata);
-        Tokenizer tokenizer = createTokenizer(metadata, vocabulary);
+        SimpleTokenizer tokenizer = createTokenizer(metadata, vocabulary);
         int modelContextLength = (int)metadata.get("llama.context_length");
         if(contextLength < 0 || modelContextLength < contextLength)
         {
@@ -87,7 +87,7 @@ public class LlamaModelLoader extends ModelLoader
 
 
     @Override
-    protected Tokenizer createTokenizer(Map<String, Object> metadata, Vocabulary vocabulary)
+    protected SimpleTokenizer createTokenizer(Map<String, Object> metadata, Vocabulary vocabulary)
     {
         String[] mergeLines = (String[])metadata.get("tokenizer.ggml.merges");
         List<Pair<Integer, Integer>> merges = Arrays.stream(mergeLines)
@@ -109,6 +109,6 @@ public class LlamaModelLoader extends ModelLoader
                                                         i -> specialTokensList.get(i),
                                                         i -> baseTokens + i)
                                         );
-        return new Tokenizer(vocabulary, merges, LLAMA_3_PATTERN, specialTokens);
+        return new SimpleTokenizer(vocabulary, merges, LLAMA_3_PATTERN, specialTokens);
     }
 }

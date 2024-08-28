@@ -1,5 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
+import io.github.orionlibs.orion_llm4j_inference.core.Weights;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Parallel;
@@ -11,12 +12,12 @@ import java.util.function.IntConsumer;
 public abstract class LLMProcessor
 {
     protected Configuration configuration;
-    protected Tokenizer tokenizer;
+    protected SimpleTokenizer tokenizer;
     protected Weights weights;
     private Response response;
 
 
-    public LLMProcessor(Configuration configuration, Tokenizer tokenizer, Weights weights)
+    public LLMProcessor(Configuration configuration, SimpleTokenizer tokenizer, Weights weights)
     {
         this.configuration = configuration;
         this.tokenizer = tokenizer;

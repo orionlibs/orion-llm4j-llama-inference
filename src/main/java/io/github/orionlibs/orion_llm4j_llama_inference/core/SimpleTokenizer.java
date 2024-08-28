@@ -1,19 +1,18 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
+import io.github.orionlibs.orion_llm4j_inference.core.Tokenizer;
+import io.github.orionlibs.orion_llm4j_inference.core.Vocabulary;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Byte Pair Encoding tokenizer.
@@ -21,7 +20,7 @@ import java.util.stream.IntStream;
  * Based on <a href="https://github.com/karpathy/minbpe">minbpe</a>, algorithmically follows along the
  * <a href="https://github.com/openai/gpt-2/blob/master/src/encoder.py">GPT 2 tokenizer</a>
  */
-public class Tokenizer
+public class SimpleTokenizer implements Tokenizer
 {
     private final Pattern compiledPattern;
     private final Vocabulary vocabulary;
@@ -51,7 +50,7 @@ public class Tokenizer
     }
 
 
-    public Tokenizer(Vocabulary vocabulary, List<Pair<Integer, Integer>> merges, String regexPattern, Map<String, Integer> specialTokens)
+    public SimpleTokenizer(Vocabulary vocabulary, List<Pair<Integer, Integer>> merges, String regexPattern, Map<String, Integer> specialTokens)
     {
         this.vocabulary = vocabulary;
         this.compiledPattern = regexPattern != null ? Pattern.compile(regexPattern) : null;
@@ -80,7 +79,7 @@ public class Tokenizer
      * this is the default tiktoken behavior right now as well
      * any other behavior is either annoying, or a major footgun.
      */
-    List<Integer> encode(String text, Set<String> allowedSpecial)
+    public List<Integer> encode(String text, Set<String> allowedSpecial)
     {
         // decode the user desire w.r.t. handling of special tokens
         Set<String> special = allowedSpecial;
@@ -120,25 +119,13 @@ public class Tokenizer
     }
 
 
-    private static List<String> findAll(Pattern pattern, String text)
-    {
-        List<String> allMatches = new ArrayList<>();
-        Matcher matcher = pattern.matcher(text);
-        while(matcher.find())
-        {
-            allMatches.add(matcher.group());
-        }
-        return allMatches;
-    }
-
-
     /**
      * Encoding that ignores any special tokens.
      */
     public List<Integer> encodeOrdinary(String text)
     {
         // split text into chunks of text by categories defined in regex pattern
-        List<String> textChunks = findAll(compiledPattern, text);
+        List<String> textChunks = Tokenizer.findAll(compiledPattern, text);
         // all chunks of text are encoded separately, then results are joined
         List<Integer> ids = new ArrayList<>();
         for(String chunk : textChunks)
@@ -162,7 +149,7 @@ public class Tokenizer
     }
 
 
-    private List<Integer> encodeChunk(String chunk)
+    public List<Integer> encodeChunk(String chunk)
     {
         // return the token ids
         // let's begin. first, convert all bytes to integers in range 0..255
@@ -193,7 +180,7 @@ public class Tokenizer
     }
 
 
-    private static List<Integer> merge(List<Integer> ids, Pair<Integer, Integer> pair, int idx)
+    public List<Integer> merge(List<Integer> ids, Pair<Integer, Integer> pair, int idx)
     {
         List<Integer> newids = new ArrayList<>();
         int i = 0;
@@ -227,40 +214,7 @@ public class Tokenizer
     }
 
 
-    /**
-     * Returns list of utf-8 byte and a corresponding list of unicode strings.
-     * The reversible bpe codes work on unicode strings.
-     * This means you need a large # of unicode characters in your vocab if you want to avoid UNKs.
-     * When you're at something like a 10B token dataset you end up needing around 5K for decent coverage.
-     * This is a significant percentage of your normal, say, 32K bpe vocab.
-     * To avoid that, we want lookup tables between utf-8 bytes and unicode strings.
-     * And avoids mapping to whitespace/control characters the bpe code barfs on.
-     */
-    private static Map<Integer, Integer> bytesToUnicode()
-    {
-        List<Integer> bs = new ArrayList<>();
-        IntStream.rangeClosed('!', '~').forEach(bs::add);
-        IntStream.rangeClosed('¡', '¬').forEach(bs::add);
-        IntStream.rangeClosed('®', 'ÿ').forEach(bs::add);
-        List<Integer> cs = new ArrayList<>(bs);
-        int n = 0;
-        for(int b = 0; b < 256; ++b)
-        {
-            if(!bs.contains(b))
-            {
-                bs.add(b);
-                cs.add(256 + n);
-                n += 1;
-            }
-        }
-        // return dict(zip(bs, cs))
-        return IntStream.range(0, bs.size())
-                        .boxed()
-                        .collect(Collectors.toMap(bs::get, cs::get));
-    }
-
-
-    static final Map<Integer, Integer> BYTE_ENCODER = bytesToUnicode();
+    static final Map<Integer, Integer> BYTE_ENCODER = Tokenizer.bytesToUnicode();
     static final Map<Integer, Integer> BYTE_DECODER = BYTE_ENCODER.entrySet()
                     .stream()
                     .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
@@ -275,34 +229,6 @@ public class Tokenizer
             sb.appendCodePoint(BYTE_ENCODER.get(Byte.toUnsignedInt(b)));
         }
         return encodeImpl(sb.toString());
-    }
-
-
-    public static String replaceControlCharacters(int[] codePoints)
-    {
-        // we don't want to print control characters
-        // which distort the output (e.g. \n or much worse)
-        // https://stackoverflow.com/questions/4324790/removing-control-characters-from-a-string-in-python/19016117#19016117
-        // http://www.unicode.org/reports/tr44/#GC_Values_Table\
-        StringBuilder chars = new StringBuilder();
-        for(int cp : codePoints)
-        {
-            if(Character.getType(cp) == Character.CONTROL && cp != '\n')
-            {
-                chars.append("\\u").append(HexFormat.of().toHexDigits(cp, 4)); // escape
-            }
-            else
-            {
-                chars.appendCodePoint(cp); // this character is ok
-            }
-        }
-        return chars.toString();
-    }
-
-
-    public static String replaceControlCharacters(String str)
-    {
-        return replaceControlCharacters(str.codePoints().toArray());
     }
 
 

@@ -1,5 +1,6 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
+import io.github.orionlibs.orion_llm4j_inference.core.Vocabulary;
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
 import io.github.orionlibs.orion_llm4j_inference.core.tensor.FloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
@@ -41,7 +42,7 @@ public abstract class ModelLoader
     public abstract LLMProcessor loadModel(Path ggufPath, int contextLength) throws IOException;
 
 
-    protected abstract Tokenizer createTokenizer(Map<String, Object> metadata, Vocabulary vocabulary);
+    protected abstract SimpleTokenizer createTokenizer(Map<String, Object> metadata, Vocabulary vocabulary);
 
 
     public static SimpleFloatTensor loadQuantized(GGUFTensorEntry entry)

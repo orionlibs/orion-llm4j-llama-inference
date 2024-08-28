@@ -3,12 +3,12 @@ package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.Configuration;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.LLMProcessor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.State;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.Tokenizer;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.Weights;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
+import io.github.orionlibs.orion_llm4j_inference.core.Weights;
 
 public final class LlamaProcessor extends LLMProcessor
 {
-    public LlamaProcessor(Configuration configuration, Tokenizer tokenizer, Weights weights)
+    public LlamaProcessor(Configuration configuration, SimpleTokenizer tokenizer, Weights weights)
     {
         super(configuration, tokenizer, weights);
     }
@@ -29,7 +29,7 @@ public final class LlamaProcessor extends LLMProcessor
     }
 
 
-    public Tokenizer getTokenizer()
+    public SimpleTokenizer getTokenizer()
     {
         return tokenizer;
     }

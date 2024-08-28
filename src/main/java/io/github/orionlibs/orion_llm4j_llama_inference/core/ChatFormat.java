@@ -5,11 +5,11 @@ import java.util.Set;
 
 public abstract class ChatFormat
 {
-    protected final Tokenizer tokenizer;
+    protected final SimpleTokenizer tokenizer;
     protected int beginOfText;
 
 
-    public ChatFormat(Tokenizer tokenizer)
+    public ChatFormat(SimpleTokenizer tokenizer)
     {
         this.tokenizer = tokenizer;
     }
@@ -24,7 +24,7 @@ public abstract class ChatFormat
     public abstract Set<Integer> getStopTokens();
 
 
-    public Tokenizer getTokenizer()
+    public SimpleTokenizer getTokenizer()
     {
         return tokenizer;
     }

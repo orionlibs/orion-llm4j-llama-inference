@@ -1,7 +1,7 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.options;
 
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
-import io.github.orionlibs.orion_llm4j_llama_inference.config.ConfigurationService;
+import io.github.orionlibs.orion_llm4j_inference.config.ConfigurationService;
 
 public final class LLMOptionsBuilder
 {

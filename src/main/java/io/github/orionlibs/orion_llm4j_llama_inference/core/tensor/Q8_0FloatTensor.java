@@ -1,7 +1,7 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.tensor;
 
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFType;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.Float16;
+import io.github.orionlibs.orion_llm4j_inference.core.utils.Float16;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.nio.ByteOrder;

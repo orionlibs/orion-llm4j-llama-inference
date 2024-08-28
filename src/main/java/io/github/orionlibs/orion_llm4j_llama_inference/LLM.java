@@ -1,6 +1,7 @@
 package io.github.orionlibs.orion_llm4j_llama_inference;
 
-import io.github.orionlibs.orion_llm4j_llama_inference.config.ConfigurationService;
+import io.github.orionlibs.orion_llm4j_inference.config.ConfigurationService;
+import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.ChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.Message;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.Response;
@@ -12,7 +13,6 @@ import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaChatFor
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaModelLoader;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaProcessor;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.LLMOptionsBuilder;
-import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -24,6 +24,7 @@ import java.util.Set;
 
 public class LLM
 {
+    private static final String FEATURE_CONFIGURATION_FILE = "/io/github/orionlibs/orion_llm4j_llama_inference/configuration/orion-feature-configuration.prop";
     private LLMOptions options;
     private Sampler sampler;
     private LlamaProcessor model;
@@ -32,6 +33,8 @@ public class LLM
 
     public LLM() throws IOException
     {
+        InputStream defaultConfigStream = LLM.class.getResourceAsStream(FEATURE_CONFIGURATION_FILE);
+        ConfigurationService.registerConfiguration(defaultConfigStream);
         buildLLMOptions();
         loadModel();
     }
@@ -39,6 +42,8 @@ public class LLM
 
     public LLM(InputStream customConfigStream) throws IOException
     {
+        InputStream defaultConfigStream = LLM.class.getResourceAsStream(FEATURE_CONFIGURATION_FILE);
+        ConfigurationService.registerConfiguration(defaultConfigStream);
         ConfigurationService.registerConfiguration(customConfigStream);
         buildLLMOptions();
         loadModel();

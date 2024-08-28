@@ -1,9 +1,9 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core.tensor;
 
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFType;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.AggregateFunction;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.MapFunction;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.MapWithIndexFunction;
+import io.github.orionlibs.orion_llm4j_inference.core.utils.AggregateFunction;
+import io.github.orionlibs.orion_llm4j_inference.core.utils.MapFunction;
+import io.github.orionlibs.orion_llm4j_inference.core.utils.MapWithIndexFunction;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.utils.Parallel;
 import java.lang.foreign.ValueLayout;
 import java.nio.ByteOrder;

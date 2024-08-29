@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.orionlibs</groupId>
     <artifactId>orion-llm4j-llama-inference</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>Orion LLM4J Llama Inference</name>
     <description>Java library running Llama-like LLMs directly from the model files</description>
     <url>https://github.com/orionlibs/orion-llm4j-llama-inference</url>

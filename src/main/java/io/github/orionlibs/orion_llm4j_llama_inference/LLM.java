@@ -50,25 +50,25 @@ public class LLM
     }
 
 
-    public Response runLLM(String prompt)
+    public Response runLLM(String systemPrompt, String userPrompt)
     {
-        return runPrompt(model, sampler, options, prompt);
+        return runPrompt(model, sampler, options, systemPrompt, userPrompt);
     }
 
 
-    public Response runLLM(String optionKeyToAdd, Object optionValueToAdd, String prompt) throws IOException
+    public Response runLLM(String optionKeyToAdd, Object optionValueToAdd, String systemPrompt, String userPrompt) throws IOException
     {
         options.add(optionKeyToAdd, optionValueToAdd);
         reloadModelIfOptionsChanged();
-        return runPrompt(model, sampler, options, prompt);
+        return runPrompt(model, sampler, options, systemPrompt, userPrompt);
     }
 
 
-    public Response runLLM(Map<String, Object> optionsToAdd, String prompt) throws IOException
+    public Response runLLM(Map<String, Object> optionsToAdd, String systemPrompt, String userPrompt) throws IOException
     {
         options.add(optionsToAdd);
         reloadModelIfOptionsChanged();
-        return runPrompt(model, sampler, options, prompt);
+        return runPrompt(model, sampler, options, systemPrompt, userPrompt);
     }
 
 
@@ -102,17 +102,17 @@ public class LLM
     }
 
 
-    private Response runPrompt(SimpleLlamaProcessor model, Sampler sampler, LLMOptions options, String prompt)
+    private Response runPrompt(SimpleLlamaProcessor model, Sampler sampler, LLMOptions options, String systemPrompt, String userPrompt)
     {
         SimpleState state = model.createNewState();
         ChatFormat chatFormat = new LlamaChatFormat(model.getTokenizer());
         List<Integer> promptTokens = new ArrayList<>();
         promptTokens.add(chatFormat.getBeginOfText());
-        if(prompt != null)
+        if(systemPrompt != null)
         {
-            promptTokens.addAll(chatFormat.encodeMessage(new Message(Role.SYSTEM, prompt)));
+            promptTokens.addAll(chatFormat.encodeMessage(new Message(Role.SYSTEM, systemPrompt)));
         }
-        promptTokens.addAll(chatFormat.encodeMessage(new Message(Role.USER, prompt)));
+        promptTokens.addAll(chatFormat.encodeMessage(new Message(Role.USER, userPrompt)));
         promptTokens.addAll(chatFormat.encodeHeader(new Message(Role.ASSISTANT, "")));
         Set<Integer> stopTokens = chatFormat.getStopTokens();
         Response response = model.generateTokens(model, state, 0, promptTokens, stopTokens, (int)options.getOptionValue("maximumTokensToProduce"), sampler, null);

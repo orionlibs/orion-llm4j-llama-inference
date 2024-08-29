@@ -29,7 +29,7 @@ public class LLMTest
     @Test
     void test_main()
     {
-        Response response = llm.runLLM("Why is the sky blue? Answer in no more than 12 words. Start your answer with the words \"The sky appears blue due to\"");
+        Response response = llm.runLLM("Answer in no more than 12 words. Start your answer with the words \"The sky appears blue due to\"", "Why is the sky blue?");
         String capturedOutput = response.getContent();
         assertTrue(capturedOutput.startsWith("The sky appears blue due to"));
     }

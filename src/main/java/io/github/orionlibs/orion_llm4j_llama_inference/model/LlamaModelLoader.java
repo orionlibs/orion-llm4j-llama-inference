@@ -1,4 +1,4 @@
-package io.github.orionlibs.orion_llm4j_llama_inference.model.llama;
+package io.github.orionlibs.orion_llm4j_llama_inference.model;
 
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
@@ -9,8 +9,6 @@ import io.github.orionlibs.orion_llm4j_llama_inference.core.RotaryPositionEmbedd
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.SimpleLlamaProcessor;
-import io.github.orionlibs.orion_llm4j_llama_inference.model.AbstractModelLoader;
-import io.github.orionlibs.orion_llm4j_llama_inference.model.QuantisationLoader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;

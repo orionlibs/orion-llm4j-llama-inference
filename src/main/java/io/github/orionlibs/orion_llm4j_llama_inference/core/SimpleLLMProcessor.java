@@ -6,6 +6,7 @@ import io.github.orionlibs.orion_llm4j_inference.core.io.LLMResponse;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.core.token.TokenGenerationState;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaNextTokenGenerator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.IntConsumer;
@@ -18,6 +19,14 @@ public class SimpleLLMProcessor extends LLMInferencer
     public SimpleLLMProcessor(LLMConfiguration configuration, SimpleTokenizer tokenizer, Weights weights)
     {
         super(configuration, tokenizer, weights, new LlamaNextTokenGenerator());
+    }
+
+
+    public SimpleTokenGenerationState createNewState()
+    {
+        SimpleTokenGenerationState state = new SimpleTokenGenerationState(getConfiguration());
+        state.latestToken = getTokenizer().getSpecialTokens().get("<|begin_of_text|>");
+        return state;
     }
 
 
@@ -93,5 +102,12 @@ public class SimpleLLMProcessor extends LLMInferencer
         response.setNumberOfTokensGenerated(numberOfTokensGenerated);
         response.setStatsFormatted(String.format("%.2f tokens/s (%d)%n", tokenGenerationRate, numberOfTokensGenerated));
         return response;
+    }
+
+
+    @Override
+    public SimpleTokenizer getTokenizer()
+    {
+        return (SimpleTokenizer)super.getTokenizer();
     }
 }

@@ -1,4 +1,4 @@
-package io.github.orionlibs.orion_llm4j_llama_inference.core;
+package io.github.orionlibs.orion_llm4j_llama_inference.core.inference;
 
 import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
 import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMInferencer;
@@ -6,10 +6,11 @@ import io.github.orionlibs.orion_llm4j_inference.core.inference.NextTokenGenerat
 import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
 import io.github.orionlibs.orion_llm4j_inference.core.token.TokenGenerationState;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Parallel;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGenerationState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
 import java.nio.FloatBuffer;
 
-class LlamaNextTokenGenerator implements NextTokenGenerator
+public class LlamaNextTokenGenerator implements NextTokenGenerator
 {
     private void rmsnorm(SimpleFloatTensor out, SimpleFloatTensor x, FloatBuffer weight, int size, float rmsNormEps)
     {

@@ -78,7 +78,7 @@ public final class GGUFModel
 
     private void populateTensorInfos(FileChannel fileChannel) throws IOException
     {
-        for(int i = 0; i < tensorCount; ++i)
+        for(int i = 0; i < tensorCount; i++)
         {
             GGUFTensorInfo ti = readTensorInfo(fileChannel);
             assert !tensorInfos.containsKey(ti.name());
@@ -101,7 +101,7 @@ public final class GGUFModel
         int n_dimensions = primitiveReader.readInt(fileChannel);
         assert n_dimensions <= 4;
         int[] dimensions = new int[n_dimensions];
-        for(int i = 0; i < n_dimensions; ++i)
+        for(int i = 0; i < n_dimensions; i++)
         {
             dimensions[i] = Math.toIntExact(primitiveReader.readLong(fileChannel));
         }

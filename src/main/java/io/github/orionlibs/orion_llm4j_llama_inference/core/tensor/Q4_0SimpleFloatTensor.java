@@ -66,7 +66,7 @@ public final class Q4_0SimpleFloatTensor extends SimpleFloatTensor
             else if(F_SPECIES.vectorBitSize() == 128)
             {
                 // This loop cannot be unrolled, why?
-                for(int i = 0; i < 2; ++i)
+                for(int i = 0; i < 2; i++)
                 {
                     var tmp = i == 0 ? loBytes : hiBytes;
                     var sum0 = that.getFloatVector(F_SPECIES, thatOffset + j + (i * 4 + 0) * F_SPECIES.length()).mul(tmp.castShape(F_SPECIES, 0));

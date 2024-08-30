@@ -72,7 +72,7 @@ public abstract class SimpleFloatTensor implements FloatTensor
     public float reduce(int thisOffset, int size, float seed, AggregateFunction reduce)
     {
         float result = seed;
-        for(int i = 0; i < size; ++i)
+        for(int i = 0; i < size; i++)
         {
             result = reduce.apply(result, getFloat(thisOffset + i));
         }
@@ -108,7 +108,7 @@ public abstract class SimpleFloatTensor implements FloatTensor
         int maxIndex = thisOffset;
         float maxValue = this.getFloat(maxIndex);
         int endIndex = thisOffset + size;
-        for(int i = thisOffset; i < endIndex; ++i)
+        for(int i = thisOffset; i < endIndex; i++)
         {
             float f = this.getFloat(i);
             if(f > maxValue)
@@ -132,7 +132,7 @@ public abstract class SimpleFloatTensor implements FloatTensor
     public SimpleFloatTensor mapInPlace(int thisOffset, int size, MapFunction mapFunction)
     {
         int endIndex = thisOffset + size;
-        for(int i = thisOffset; i < endIndex; ++i)
+        for(int i = thisOffset; i < endIndex; i++)
         {
             setFloat(i, mapFunction.apply(getFloat(i)));
         }
@@ -151,7 +151,7 @@ public abstract class SimpleFloatTensor implements FloatTensor
     public SimpleFloatTensor mapWithIndexInPlace(int thisOffset, int size, MapWithIndexFunction mapWithIndexFunction)
     {
         int endOffset = thisOffset + size;
-        for(int i = thisOffset; i < endOffset; ++i)
+        for(int i = thisOffset; i < endOffset; i++)
         {
             setFloat(i, mapWithIndexFunction.apply(getFloat(i), i));
         }
@@ -218,7 +218,7 @@ public abstract class SimpleFloatTensor implements FloatTensor
     public SimpleFloatTensor saxpyInPlace(int thisOffset, FloatTensor that, int thatOffset, int size, float a)
     {
         // this[thatOffset ... thatOffset + size) = a * that[thatOffset ... thatOffset + size) + this[thisOffset ... thisOffset + size)
-        for(int i = 0; i < size; ++i)
+        for(int i = 0; i < size; i++)
         {
             setFloat(thisOffset + i, a * that.getFloat(thatOffset + i) + this.getFloat(thisOffset + i));
         }

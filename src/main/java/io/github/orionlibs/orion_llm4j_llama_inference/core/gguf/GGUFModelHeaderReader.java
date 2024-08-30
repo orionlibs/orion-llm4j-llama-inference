@@ -42,7 +42,7 @@ final class GGUFModelHeaderReader
         this.tensorCount = Math.toIntExact(primitiveReader.readLong(fileChannel));
         this.metadata_kv_count = Math.toIntExact(primitiveReader.readLong(fileChannel));
         this.metadata = HashMap.newHashMap(metadata_kv_count);
-        for(int i = 0; i < metadata_kv_count; ++i)
+        for(int i = 0; i < metadata_kv_count; i++)
         {
             Pair<String, Object> keyValue = keyValuePairReader.readKeyValuePair(fileChannel);
             assert !metadata.containsKey(keyValue.first());

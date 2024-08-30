@@ -58,7 +58,7 @@ public final class Q8_0SimpleFloatTensor extends SimpleFloatTensor
             {
                 VectorSpecies<Byte> B_128 = ByteVector.SPECIES_128;
                 // This loop cannot be unrolled, why?
-                for(int i = 0; i < 2; ++i)
+                for(int i = 0; i < 2; i++)
                 {
                     var wBytes = ByteVector.fromMemorySegment(B_128, thiz.memorySegment, blockOffset + Float16.BYTES + i * B_128.vectorByteSize(), ByteOrder.LITTLE_ENDIAN);
                     var sum0 = that.getFloatVector(F_SPECIES, thatOffset + j + i * 16 + 0 * F_SPECIES.length()).mul(wBytes.castShape(F_SPECIES, 0));

@@ -61,7 +61,7 @@ final class GGUFModelArrayReader
     private Object[] readArrays(FileChannel fileChannel, int len) throws IOException
     {
         Object[] arrays = new Object[len];
-        for(int i = 0; i < len; ++i)
+        for(int i = 0; i < len; i++)
         {
             arrays[i] = readArray(fileChannel);
         }
@@ -72,7 +72,7 @@ final class GGUFModelArrayReader
     private String[] readStrings(FileChannel fileChannel, int len) throws IOException
     {
         String[] strings = new String[len];
-        for(int i = 0; i < len; ++i)
+        for(int i = 0; i < len; i++)
         {
             strings[i] = stringReader.readString(fileChannel);
         }
@@ -83,7 +83,7 @@ final class GGUFModelArrayReader
     private boolean[] readBooleans(FileChannel fileChannel, int len) throws IOException
     {
         boolean[] booleans = new boolean[len];
-        for(int i = 0; i < len; ++i)
+        for(int i = 0; i < len; i++)
         {
             booleans[i] = primitiveReader.readBoolean(fileChannel);
         }
@@ -94,7 +94,7 @@ final class GGUFModelArrayReader
     private float[] readFloats(FileChannel fileChannel, int len) throws IOException
     {
         float[] floats = new float[len];
-        for(int i = 0; i < len; ++i)
+        for(int i = 0; i < len; i++)
         {
             floats[i] = primitiveReader.readFloat(fileChannel);
         }
@@ -105,7 +105,7 @@ final class GGUFModelArrayReader
     private int[] readIntegers(FileChannel fileChannel, int len) throws IOException
     {
         int[] ints = new int[len];
-        for(int i = 0; i < len; ++i)
+        for(int i = 0; i < len; i++)
         {
             ints[i] = primitiveReader.readInt(fileChannel);
         }
@@ -116,7 +116,7 @@ final class GGUFModelArrayReader
     private short[] readShorts(FileChannel fileChannel, int len) throws IOException
     {
         short[] shorts = new short[len];
-        for(int i = 0; i < len; ++i)
+        for(int i = 0; i < len; i++)
         {
             shorts[i] = primitiveReader.readShort(fileChannel);
         }
@@ -127,7 +127,7 @@ final class GGUFModelArrayReader
     private byte[] readBytes(FileChannel fileChannel, int len) throws IOException
     {
         byte[] bytes = new byte[len];
-        for(int i = 0; i < len; ++i)
+        for(int i = 0; i < len; i++)
         {
             bytes[i] = primitiveReader.readByte(fileChannel);
         }

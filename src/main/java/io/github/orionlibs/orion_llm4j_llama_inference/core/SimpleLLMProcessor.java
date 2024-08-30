@@ -173,25 +173,37 @@ public abstract class SimpleLLMProcessor extends LLMProcessor
         SimpleState simpleState = (SimpleState)state;
         response = new Response(maxTokens);
         long startNanos = System.nanoTime();
-        if(maxTokens < 0 || model.getConfiguration().contextLength < maxTokens)
+        /*if(maxTokens < 0 || model.getConfiguration().contextLength < maxTokens)
+        {
+            maxTokens = model.getConfiguration().contextLength;
+        }*/
+        if(maxTokens < 0)
         {
             maxTokens = model.getConfiguration().contextLength;
         }
         int token = simpleState.latestToken; // BOS?
-        int nextToken;
+        int nextToken = 0;
         int promptIndex = 0;
-        for(int position = startPosition; position < maxTokens; ++position)
+        for(int position = startPosition; position < maxTokens; position++)
         {
             forward(model, simpleState, token, position);
+            //this is the prompt itself
             if(promptIndex < promptTokens.size())
             {
                 // Force-pick token from prompt.
                 nextToken = promptTokens.get(promptIndex++);
+                if(onTokenGenerated != null)
+                {
+                    onTokenGenerated.accept(nextToken);
+                }
+                //System.err.print(Tokenizer.replaceControlCharacters(getTokenizer().decode(List.of(nextToken))));
             }
+            //this is the LLM response itself
             else
             {
                 nextToken = sampler.sampleToken(simpleState.logits);
                 response.addResponseToken(nextToken);
+                //System.err.print(Tokenizer.replaceControlCharacters(getTokenizer().decode(List.of(nextToken))));
                 if(onTokenGenerated != null)
                 {
                     onTokenGenerated.accept(nextToken);

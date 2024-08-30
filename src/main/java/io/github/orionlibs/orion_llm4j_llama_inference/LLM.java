@@ -50,25 +50,25 @@ public class LLM
     }
 
 
-    public Response runLLM(String systemPrompt, String userPrompt)
+    public Response runLLM(String systemPrompt, String userPrompt, int maximumTokensToProduce)
     {
-        return runPrompt(model, sampler, options, systemPrompt, userPrompt);
+        return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
     }
 
 
-    public Response runLLM(String optionKeyToAdd, Object optionValueToAdd, String systemPrompt, String userPrompt) throws IOException
+    public Response runLLM(String optionKeyToAdd, Object optionValueToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException
     {
         options.add(optionKeyToAdd, optionValueToAdd);
         reloadModelIfOptionsChanged();
-        return runPrompt(model, sampler, options, systemPrompt, userPrompt);
+        return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
     }
 
 
-    public Response runLLM(Map<String, Object> optionsToAdd, String systemPrompt, String userPrompt) throws IOException
+    public Response runLLM(Map<String, Object> optionsToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException
     {
         options.add(optionsToAdd);
         reloadModelIfOptionsChanged();
-        return runPrompt(model, sampler, options, systemPrompt, userPrompt);
+        return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
     }
 
 
@@ -102,7 +102,7 @@ public class LLM
     }
 
 
-    private Response runPrompt(SimpleLlamaProcessor model, Sampler sampler, LLMOptions options, String systemPrompt, String userPrompt)
+    private Response runPrompt(SimpleLlamaProcessor model, Sampler sampler, LLMOptions options, String systemPrompt, String userPrompt, int maximumTokensToProduce)
     {
         SimpleState state = model.createNewState();
         ChatFormat chatFormat = new LlamaChatFormat(model.getTokenizer());
@@ -115,7 +115,12 @@ public class LLM
         promptTokens.addAll(chatFormat.encodeMessage(new Message(Role.USER, userPrompt)));
         promptTokens.addAll(chatFormat.encodeHeader(new Message(Role.ASSISTANT, "")));
         Set<Integer> stopTokens = chatFormat.getStopTokens();
-        Response response = model.generateTokens(model, state, 0, promptTokens, stopTokens, (int)options.getOptionValue("maximumTokensToProduce"), sampler, null);
+        Response response = model.generateTokens(model, state, 0, promptTokens, stopTokens, maximumTokensToProduce, sampler, token -> {
+            if(!model.getTokenizer().isSpecialToken(token))
+            {
+                System.out.print(model.getTokenizer().decode(List.of(token)));
+            }
+        });
         if(!response.getResponseTokens().isEmpty() && stopTokens.contains(response.getResponseTokens().getLast()))
         {
             response.getResponseTokens().removeLast();

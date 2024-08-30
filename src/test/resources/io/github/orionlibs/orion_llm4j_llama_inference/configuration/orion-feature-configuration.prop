@@ -2,4 +2,4 @@ orion-llm4j-llama-inference.temperature=0.1
 orion-llm4j-llama-inference.randomness=0.95
 orion-llm4j-llama-inference.maximum.tokens.to.produce=512
 orion-llm4j-llama-inference.interactive.chat=false
-orion-llm4j-llama-inference.llm.model.path=src/test/resources/io/github/orionlibs/orion_llm4j_llama_inference/models/Meta-Llama-3.1-8B-Instruct-Q4_0.gguf
+orion-llm4j-llama-inference.llm.model.path=src/test/resources/io/github/orionlibs/orion_llm4j_llama_inference/model/Meta-Llama-3.1-8B-Instruct-Q4_0.gguf

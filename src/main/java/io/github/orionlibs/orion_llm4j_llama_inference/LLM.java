@@ -12,7 +12,11 @@ import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSample
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaSimpleModelLoader;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.SimpleLlamaProcessor;
+import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidMaximumTokensOptionException;
+import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidUserPromptException;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.LLMOptionsBuilder;
+import io.github.orionlibs.orion_llm4j_llama_inference.options.MaximumTokenValidator;
+import io.github.orionlibs.orion_llm4j_llama_inference.options.UserPromptValidator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -29,10 +33,14 @@ public class LLM
     private Sampler sampler;
     private SimpleLlamaProcessor model;
     private boolean isModelLoaded;
+    private MaximumTokenValidator maximumTokenValidator;
+    private UserPromptValidator userPromptValidator;
 
 
     public LLM() throws IOException
     {
+        this.maximumTokenValidator = new MaximumTokenValidator();
+        this.userPromptValidator = new UserPromptValidator();
         InputStream defaultConfigStream = LLM.class.getResourceAsStream(FEATURE_CONFIGURATION_FILE);
         ConfigurationService.registerConfiguration(defaultConfigStream);
         buildLLMOptions();
@@ -50,23 +58,29 @@ public class LLM
     }
 
 
-    public Response runLLM(String systemPrompt, String userPrompt, int maximumTokensToProduce)
+    public Response runLLM(String systemPrompt, String userPrompt, int maximumTokensToProduce) throws InvalidMaximumTokensOptionException, InvalidUserPromptException
     {
+        maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
+        userPromptValidator.isValidWithException(userPrompt);
         return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
     }
 
 
-    public Response runLLM(String optionKeyToAdd, Object optionValueToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException
+    public Response runLLM(String optionKeyToAdd, Object optionValueToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException, InvalidMaximumTokensOptionException, InvalidUserPromptException
     {
         options.add(optionKeyToAdd, optionValueToAdd);
+        maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
+        userPromptValidator.isValidWithException(userPrompt);
         reloadModelIfOptionsChanged();
         return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
     }
 
 
-    public Response runLLM(Map<String, Object> optionsToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException
+    public Response runLLM(Map<String, Object> optionsToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException, InvalidMaximumTokensOptionException, InvalidUserPromptException
     {
         options.add(optionsToAdd);
+        maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
+        userPromptValidator.isValidWithException(userPrompt);
         reloadModelIfOptionsChanged();
         return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
     }

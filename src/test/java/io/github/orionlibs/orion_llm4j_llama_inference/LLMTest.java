@@ -1,8 +1,11 @@
 package io.github.orionlibs.orion_llm4j_llama_inference;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.orionlibs.orion_llm4j_inference.core.Response;
+import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidMaximumTokensOptionException;
+import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidUserPromptException;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
@@ -45,5 +48,23 @@ public class LLMTest
         String book = IOUtils.toString(defaultConfigStream);
         //ConfigurationService.updateProp("orion-llm4j-llama-inference.maximum.tokens.to.produce", "1048576");
         Response response = llm.runLLM("Answer in no more than 50 words. Summarise the given book", book, 512);
+    }
+
+
+    @Test
+    void test_invalidMaximumTokens()
+    {
+        assertThrows(InvalidMaximumTokensOptionException.class, () -> {
+            Response response = llm.runLLM("Answer in no more than 12 words. Start your answer with the words \"The sky appears blue, because\"", "Why is the sky blue?", Integer.MAX_VALUE);
+        });
+    }
+
+
+    @Test
+    void test_invalidUserPrompt()
+    {
+        assertThrows(InvalidUserPromptException.class, () -> {
+            Response response = llm.runLLM("", "", 512);
+        });
     }
 }

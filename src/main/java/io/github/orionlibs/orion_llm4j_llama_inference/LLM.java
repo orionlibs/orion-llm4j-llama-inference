@@ -7,9 +7,9 @@ import io.github.orionlibs.orion_llm4j_inference.core.io.LLMResponse;
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
 import io.github.orionlibs.orion_llm4j_inference.options.Role;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaLLMInferencer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenGenerationState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaChatFormat;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaLLMInferencer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
 import io.github.orionlibs.orion_llm4j_llama_inference.model.LlamaModelLoader;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidMaximumTokensOptionException;
@@ -44,7 +44,6 @@ public class LLM
         InputStream defaultConfigStream = LLM.class.getResourceAsStream(FEATURE_CONFIGURATION_FILE);
         ConfigurationService.registerConfiguration(defaultConfigStream);
         buildLLMOptions();
-        loadModel();
     }
 
 
@@ -54,12 +53,12 @@ public class LLM
         ConfigurationService.registerConfiguration(defaultConfigStream);
         ConfigurationService.registerConfiguration(customConfigStream);
         buildLLMOptions();
-        loadModel();
     }
 
 
-    public LLMResponse runLLM(String systemPrompt, String userPrompt, int maximumTokensToProduce) throws InvalidMaximumTokensOptionException, InvalidUserPromptException
+    public LLMResponse runLLM(String systemPrompt, String userPrompt, int maximumTokensToProduce) throws InvalidMaximumTokensOptionException, InvalidUserPromptException, IOException
     {
+        loadModel();
         maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
         userPromptValidator.isValidWithException(userPrompt);
         return runPrompt(model, sampler, systemPrompt, userPrompt, maximumTokensToProduce);
@@ -68,6 +67,7 @@ public class LLM
 
     public LLMResponse runLLM(String optionKeyToAdd, Object optionValueToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException, InvalidMaximumTokensOptionException, InvalidUserPromptException
     {
+        loadModel();
         options.add(optionKeyToAdd, optionValueToAdd);
         maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
         userPromptValidator.isValidWithException(userPrompt);
@@ -78,6 +78,7 @@ public class LLM
 
     public LLMResponse runLLM(Map<String, Object> optionsToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException, InvalidMaximumTokensOptionException, InvalidUserPromptException
     {
+        loadModel();
         options.add(optionsToAdd);
         maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
         userPromptValidator.isValidWithException(userPrompt);

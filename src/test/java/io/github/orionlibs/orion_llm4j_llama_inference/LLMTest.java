@@ -33,7 +33,7 @@ public class LLMTest
 
 
     @Test
-    void test_main()
+    void test_main() throws IOException
     {
         LLMResponse response = llm.runLLM("Answer in no more than 12 words. Start your answer with the words \"The sky appears blue, because\"", "Why is the sky blue?", 512);
         String capturedOutput = response.getContent();

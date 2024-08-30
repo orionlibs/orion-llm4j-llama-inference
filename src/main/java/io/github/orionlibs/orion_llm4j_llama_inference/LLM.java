@@ -8,10 +8,10 @@ import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
 import io.github.orionlibs.orion_llm4j_inference.options.Role;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGenerationState;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaChatFormat;
-import io.github.orionlibs.orion_llm4j_llama_inference.model.llama.LlamaSimpleModelLoader;
-import io.github.orionlibs.orion_llm4j_llama_inference.model.llama.SimpleLlamaProcessor;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
+import io.github.orionlibs.orion_llm4j_llama_inference.model.llama.LlamaModelLoader;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.SimpleLlamaProcessor;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidMaximumTokensOptionException;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidUserPromptException;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.LLMOptionsBuilder;
@@ -109,7 +109,7 @@ public class LLM
             Path llmModelPath = Paths.get((String)options.getOptionValue("llmModelPath"));
             float temperature = (float)options.getOptionValue("temperature");
             float randomness = (float)options.getOptionValue("randomness");
-            model = new LlamaSimpleModelLoader().loadModel(llmModelPath, (int)options.getOptionValue("maximumTokensToProduce"));
+            model = new LlamaModelLoader().loadModel(llmModelPath, (int)options.getOptionValue("maximumTokensToProduce"));
             sampler = new SimpleSamplerSelector().selectSampler(model.getConfiguration().vocabularySize, temperature, randomness);
             isModelLoaded = true;
         }

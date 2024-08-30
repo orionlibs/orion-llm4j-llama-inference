@@ -8,8 +8,9 @@ import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.RotaryPositionEmbeddings;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.SimpleLlamaProcessor;
+import io.github.orionlibs.orion_llm4j_llama_inference.model.AbstractModelLoader;
 import io.github.orionlibs.orion_llm4j_llama_inference.model.QuantisationLoader;
-import io.github.orionlibs.orion_llm4j_llama_inference.model.SimpleModelLoader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;
@@ -19,13 +20,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class LlamaSimpleModelLoader extends SimpleModelLoader
+public class LlamaModelLoader extends AbstractModelLoader
 {
     private static final String TOKENIZER_LLAMA_3_MODEL = "gpt2";
     private static final String LLAMA_3_PATTERN = "(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\\r\\n\\p{L}\\p{N}]?\\p{L}+|\\p{N}{1,3}| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*|\\s*[\\r\\n]+|\\s+(?!\\S)|\\s+";
 
 
-    public LlamaSimpleModelLoader()
+    public LlamaModelLoader()
     {
         super(TOKENIZER_LLAMA_3_MODEL, LLAMA_3_PATTERN);
     }

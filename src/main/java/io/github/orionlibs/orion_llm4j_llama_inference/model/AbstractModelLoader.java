@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
-public abstract class SimpleModelLoader extends ModelLoader
+public abstract class AbstractModelLoader extends ModelLoader
 {
     protected String TOKENIZER_MODEL;
     protected String PATTERN;
 
 
-    public SimpleModelLoader(String TOKENIZER_MODEL, String PATTERN)
+    public AbstractModelLoader(String TOKENIZER_MODEL, String PATTERN)
     {
         this.TOKENIZER_MODEL = TOKENIZER_MODEL;
         this.PATTERN = PATTERN;

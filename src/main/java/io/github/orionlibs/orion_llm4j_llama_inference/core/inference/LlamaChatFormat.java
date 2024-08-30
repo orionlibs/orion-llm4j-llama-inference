@@ -3,7 +3,7 @@ package io.github.orionlibs.orion_llm4j_llama_inference.core.inference;
 import io.github.orionlibs.orion_llm4j_inference.core.inference.ChatFormat;
 import io.github.orionlibs.orion_llm4j_inference.core.io.LLMRequest;
 import io.github.orionlibs.orion_llm4j_inference.options.Role;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenizer;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.token.LlamaTokenizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

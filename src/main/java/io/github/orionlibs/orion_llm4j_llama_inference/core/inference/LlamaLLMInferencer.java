@@ -6,8 +6,8 @@ import io.github.orionlibs.orion_llm4j_inference.core.io.LLMResponse;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.core.token.TokenGenerationState;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGenerationState;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenizer;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenGenerationState;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.token.LlamaTokenizer;
 import java.util.List;
 import java.util.Set;
 import java.util.function.IntConsumer;
@@ -23,9 +23,9 @@ public class LlamaLLMInferencer extends LLMInferencer
     }
 
 
-    public SimpleTokenGenerationState createNewState()
+    public LlamaTokenGenerationState createNewState()
     {
-        SimpleTokenGenerationState state = new SimpleTokenGenerationState(getConfiguration());
+        LlamaTokenGenerationState state = new LlamaTokenGenerationState(getConfiguration());
         state.latestToken = getTokenizer().getSpecialTokens().get("<|begin_of_text|>");
         return state;
     }
@@ -51,7 +51,7 @@ public class LlamaLLMInferencer extends LLMInferencer
     @Override
     public LLMResponse generateTokens(TokenGenerationState state, int startPosition, List<Integer> promptTokens, Set<Integer> stopTokens, int maxTokens, Sampler sampler, IntConsumer onTokenGenerated)
     {
-        SimpleTokenGenerationState simpleState = (SimpleTokenGenerationState)state;
+        LlamaTokenGenerationState simpleState = (LlamaTokenGenerationState)state;
         response = new LLMResponse(maxTokens);
         long startNanos = System.nanoTime();
         /*if(maxTokens < 0 || model.getConfiguration().contextLength < maxTokens)

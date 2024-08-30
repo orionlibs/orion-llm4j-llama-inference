@@ -1,4 +1,4 @@
-package io.github.orionlibs.orion_llm4j_llama_inference.core;
+package io.github.orionlibs.orion_llm4j_llama_inference.core.token;
 
 import io.github.orionlibs.orion_llm4j_inference.core.model.Vocabulary;
 import io.github.orionlibs.orion_llm4j_inference.core.token.Tokenizer;

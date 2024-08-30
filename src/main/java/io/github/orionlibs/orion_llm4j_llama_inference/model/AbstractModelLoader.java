@@ -3,7 +3,7 @@ package io.github.orionlibs.orion_llm4j_llama_inference.model;
 import io.github.orionlibs.orion_llm4j_inference.core.model.ModelLoader;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Vocabulary;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaLLMInferencer;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenizer;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.token.LlamaTokenizer;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;

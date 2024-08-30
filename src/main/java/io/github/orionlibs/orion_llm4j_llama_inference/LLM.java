@@ -8,7 +8,7 @@ import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
 import io.github.orionlibs.orion_llm4j_inference.options.Role;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaLLMInferencer;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGenerationState;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenGenerationState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
 import io.github.orionlibs.orion_llm4j_llama_inference.model.LlamaModelLoader;
@@ -118,7 +118,7 @@ public class LLM
 
     private LLMResponse runPrompt(LlamaLLMInferencer model, Sampler sampler, String systemPrompt, String userPrompt, int maximumTokensToProduce)
     {
-        SimpleTokenGenerationState state = model.createNewState();
+        LlamaTokenGenerationState state = model.createNewState();
         ChatFormat chatFormat = new LlamaChatFormat(model.getTokenizer());
         List<Integer> promptTokens = new ArrayList<>();
         promptTokens.add(chatFormat.getBeginOfText());

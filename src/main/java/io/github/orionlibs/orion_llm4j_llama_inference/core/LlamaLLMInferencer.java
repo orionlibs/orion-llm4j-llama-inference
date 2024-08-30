@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.IntConsumer;
 
-public class SimpleLLMProcessor extends LLMInferencer
+public class LlamaLLMInferencer extends LLMInferencer
 {
     private LLMResponse response;
 
 
-    public SimpleLLMProcessor(LLMConfiguration configuration, SimpleTokenizer tokenizer, Weights weights)
+    public LlamaLLMInferencer(LLMConfiguration configuration, SimpleTokenizer tokenizer, Weights weights)
     {
         super(configuration, tokenizer, weights, new LlamaNextTokenGenerator());
     }

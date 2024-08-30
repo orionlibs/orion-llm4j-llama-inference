@@ -5,6 +5,7 @@ import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration
 import io.github.orionlibs.orion_llm4j_inference.core.model.Vocabulary;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaLLMInferencer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.RotaryPositionEmbeddings;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
@@ -30,7 +31,7 @@ public class LlamaModelLoader extends AbstractModelLoader
 
 
     @Override
-    public SimpleLlamaProcessor loadModel(Path ggufPath, int contextLength) throws IOException
+    public LlamaLLMInferencer loadModel(Path ggufPath, int contextLength) throws IOException
     {
         GGUFModel gguf = GGUFModel.loadModel(ggufPath);
         Map<String, Object> metadata = gguf.getMetadata();
@@ -81,7 +82,7 @@ public class LlamaModelLoader extends AbstractModelLoader
                         FloatBuffer.wrap(ropeFreqsImag),
                         QuantisationLoader.loadQuantized(tensorEntries.get("output.weight"))
         );
-        return new SimpleLlamaProcessor(config, tokenizer, qw);
+        return new LlamaLLMInferencer(config, tokenizer, qw);
     }
 
 

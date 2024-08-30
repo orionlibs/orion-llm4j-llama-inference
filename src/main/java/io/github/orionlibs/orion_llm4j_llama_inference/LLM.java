@@ -7,6 +7,7 @@ import io.github.orionlibs.orion_llm4j_inference.core.io.LLMResponse;
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
 import io.github.orionlibs.orion_llm4j_inference.options.Role;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaLLMInferencer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGenerationState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
@@ -30,7 +31,7 @@ public class LLM
     private static final String FEATURE_CONFIGURATION_FILE = "/io/github/orionlibs/orion_llm4j_llama_inference/configuration/orion-feature-configuration.prop";
     private LLMOptions options;
     private Sampler sampler;
-    private SimpleLlamaProcessor model;
+    private LlamaLLMInferencer model;
     private boolean isModelLoaded;
     private MaximumTokenValidator maximumTokenValidator;
     private UserPromptValidator userPromptValidator;
@@ -115,7 +116,7 @@ public class LLM
     }
 
 
-    private LLMResponse runPrompt(SimpleLlamaProcessor model, Sampler sampler, String systemPrompt, String userPrompt, int maximumTokensToProduce)
+    private LLMResponse runPrompt(LlamaLLMInferencer model, Sampler sampler, String systemPrompt, String userPrompt, int maximumTokensToProduce)
     {
         SimpleTokenGenerationState state = model.createNewState();
         ChatFormat chatFormat = new LlamaChatFormat(model.getTokenizer());

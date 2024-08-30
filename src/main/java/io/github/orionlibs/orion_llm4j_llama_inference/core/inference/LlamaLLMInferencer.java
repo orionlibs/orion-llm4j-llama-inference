@@ -1,4 +1,4 @@
-package io.github.orionlibs.orion_llm4j_llama_inference.core;
+package io.github.orionlibs.orion_llm4j_llama_inference.core.inference;
 
 import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
 import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMInferencer;
@@ -6,7 +6,8 @@ import io.github.orionlibs.orion_llm4j_inference.core.io.LLMResponse;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.core.token.TokenGenerationState;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaNextTokenGenerator;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGenerationState;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenizer;
 import java.util.List;
 import java.util.Set;
 import java.util.function.IntConsumer;
@@ -16,7 +17,7 @@ public class LlamaLLMInferencer extends LLMInferencer
     private LLMResponse response;
 
 
-    public LlamaLLMInferencer(LLMConfiguration configuration, SimpleTokenizer tokenizer, Weights weights)
+    public LlamaLLMInferencer(LLMConfiguration configuration, LlamaTokenizer tokenizer, Weights weights)
     {
         super(configuration, tokenizer, weights, new LlamaNextTokenGenerator());
     }
@@ -106,8 +107,8 @@ public class LlamaLLMInferencer extends LLMInferencer
 
 
     @Override
-    public SimpleTokenizer getTokenizer()
+    public LlamaTokenizer getTokenizer()
     {
-        return (SimpleTokenizer)super.getTokenizer();
+        return (LlamaTokenizer)super.getTokenizer();
     }
 }

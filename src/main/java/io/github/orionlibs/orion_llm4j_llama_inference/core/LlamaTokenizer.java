@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * Based on <a href="https://github.com/karpathy/minbpe">minbpe</a>, algorithmically follows along the
  * <a href="https://github.com/openai/gpt-2/blob/master/src/encoder.py">GPT 2 tokenizer</a>
  */
-public class SimpleTokenizer implements Tokenizer
+public class LlamaTokenizer implements Tokenizer
 {
     private final Pattern compiledPattern;
     private final Vocabulary vocabulary;
@@ -53,7 +53,7 @@ public class SimpleTokenizer implements Tokenizer
     }
 
 
-    public SimpleTokenizer(Vocabulary vocabulary, List<Pair<Integer, Integer>> merges, String regexPattern, Map<String, Integer> specialTokens)
+    public LlamaTokenizer(Vocabulary vocabulary, List<Pair<Integer, Integer>> merges, String regexPattern, Map<String, Integer> specialTokens)
     {
         this.vocabulary = vocabulary;
         this.compiledPattern = regexPattern != null ? Pattern.compile(regexPattern) : null;

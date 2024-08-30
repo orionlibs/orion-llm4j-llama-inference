@@ -3,7 +3,7 @@ package io.github.orionlibs.orion_llm4j_llama_inference.core.inference;
 import io.github.orionlibs.orion_llm4j_inference.core.inference.ChatFormat;
 import io.github.orionlibs.orion_llm4j_inference.core.io.LLMRequest;
 import io.github.orionlibs.orion_llm4j_inference.options.Role;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class LlamaChatFormat extends ChatFormat
     protected final int endOfMessage;
 
 
-    public LlamaChatFormat(SimpleTokenizer tokenizer)
+    public LlamaChatFormat(LlamaTokenizer tokenizer)
     {
         super(tokenizer);
         Map<String, Integer> specialTokens = this.tokenizer.getSpecialTokens();

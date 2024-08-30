@@ -2,8 +2,8 @@ package io.github.orionlibs.orion_llm4j_llama_inference.model;
 
 import io.github.orionlibs.orion_llm4j_inference.core.model.ModelLoader;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Vocabulary;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaLLMInferencer;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaLLMInferencer;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenizer;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -37,5 +37,5 @@ public abstract class AbstractModelLoader extends ModelLoader
     public abstract LlamaLLMInferencer loadModel(Path ggufPath, int contextLength) throws IOException;
 
 
-    protected abstract SimpleTokenizer createTokenizer(Map<String, Object> metadata, Vocabulary vocabulary);
+    protected abstract LlamaTokenizer createTokenizer(Map<String, Object> metadata, Vocabulary vocabulary);
 }

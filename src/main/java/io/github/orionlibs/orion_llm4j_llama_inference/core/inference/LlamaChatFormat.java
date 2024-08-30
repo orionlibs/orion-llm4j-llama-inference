@@ -1,4 +1,4 @@
-package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
+package io.github.orionlibs.orion_llm4j_llama_inference.core.inference;
 
 import io.github.orionlibs.orion_llm4j_inference.core.inference.ChatFormat;
 import io.github.orionlibs.orion_llm4j_inference.core.io.LLMRequest;

@@ -1,35 +1,17 @@
-package io.github.orionlibs.orion_llm4j_llama_inference.models;
+package io.github.orionlibs.orion_llm4j_llama_inference.model;
 
-import io.github.orionlibs.orion_llm4j_inference.core.model.ModelLoader;
-import io.github.orionlibs.orion_llm4j_inference.core.model.Vocabulary;
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFType;
 import io.github.orionlibs.orion_llm4j_inference.core.tensor.FloatTensor;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleLLMProcessor;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q4_0SimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.Q8_0SimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
-import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.file.Path;
-import java.util.Map;
 import java.util.function.IntFunction;
 
-public abstract class SimpleModelLoader extends ModelLoader
+public class QuantisationLoader
 {
-    protected String TOKENIZER_MODEL;
-    protected String PATTERN;
-
-
-    public SimpleModelLoader(String TOKENIZER_MODEL, String PATTERN)
-    {
-        this.TOKENIZER_MODEL = TOKENIZER_MODEL;
-        this.PATTERN = PATTERN;
-    }
-
-
     public static SimpleFloatTensor loadQuantized(GGUFTensorEntry entry)
     {
         GGUFType ggmlType = entry.ggmlType();
@@ -74,23 +56,4 @@ public abstract class SimpleModelLoader extends ModelLoader
             default -> throw new UnsupportedOperationException("Conversion to " + ggmlType);
         };
     }
-
-
-    @Override
-    public Vocabulary loadVocabulary(Map<String, Object> metadata)
-    {
-        String model = (String)metadata.get("tokenizer.ggml.model");
-        if(!TOKENIZER_MODEL.equals(model))
-        {
-            throw new IllegalArgumentException("expected " + TOKENIZER_MODEL + " but found " + model);
-        }
-        String[] tokens = (String[])metadata.get("tokenizer.ggml.tokens");
-        return new Vocabulary(tokens, null);
-    }
-
-
-    public abstract SimpleLLMProcessor loadModel(Path ggufPath, int contextLength) throws IOException;
-
-
-    protected abstract SimpleTokenizer createTokenizer(Map<String, Object> metadata, Vocabulary vocabulary);
 }

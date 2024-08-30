@@ -1,14 +1,15 @@
-package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
+package io.github.orionlibs.orion_llm4j_llama_inference.model.llama;
 
+import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Vocabulary;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
-import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.RotaryPositionEmbeddings;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
-import io.github.orionlibs.orion_llm4j_llama_inference.models.SimpleModelLoader;
+import io.github.orionlibs.orion_llm4j_llama_inference.model.QuantisationLoader;
+import io.github.orionlibs.orion_llm4j_llama_inference.model.SimpleModelLoader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;
@@ -67,20 +68,20 @@ public class LlamaSimpleModelLoader extends SimpleModelLoader
         float[] ropeFreqsImag = ropeFreqs.second();
         Map<String, GGUFTensorEntry> tensorEntries = gguf.getTensorEntries();
         Weights qw = new Weights(
-                        loadQuantized(tensorEntries.get("token_embd.weight")),
-                        loadArrayOfFloatBuffer(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_norm.weight")),
-                        loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_q.weight")),
-                        loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_k.weight")),
-                        loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_v.weight")),
-                        loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_output.weight")),
-                        loadArrayOfFloatBuffer(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".ffn_norm.weight")),
-                        loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".ffn_gate.weight")), // w1
-                        loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".ffn_down.weight")), // w2
-                        loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".ffn_up.weight")), // w3
-                        toFloatBuffer(tensorEntries.get("output_norm.weight")),
+                        QuantisationLoader.loadQuantized(tensorEntries.get("token_embd.weight")),
+                        QuantisationLoader.loadArrayOfFloatBuffer(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_norm.weight")),
+                        QuantisationLoader.loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_q.weight")),
+                        QuantisationLoader.loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_k.weight")),
+                        QuantisationLoader.loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_v.weight")),
+                        QuantisationLoader.loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".attn_output.weight")),
+                        QuantisationLoader.loadArrayOfFloatBuffer(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".ffn_norm.weight")),
+                        QuantisationLoader.loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".ffn_gate.weight")), // w1
+                        QuantisationLoader.loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".ffn_down.weight")), // w2
+                        QuantisationLoader.loadArrayOfQuantized(config.numberOfLayers, i -> tensorEntries.get("blk." + i + ".ffn_up.weight")), // w3
+                        QuantisationLoader.toFloatBuffer(tensorEntries.get("output_norm.weight")),
                         FloatBuffer.wrap(ropeFreqsReal),
                         FloatBuffer.wrap(ropeFreqsImag),
-                        loadQuantized(tensorEntries.get("output.weight"))
+                        QuantisationLoader.loadQuantized(tensorEntries.get("output.weight"))
         );
         return new SimpleLlamaProcessor(config, tokenizer, qw);
     }

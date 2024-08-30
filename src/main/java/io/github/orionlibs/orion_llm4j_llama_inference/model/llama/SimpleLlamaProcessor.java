@@ -1,4 +1,4 @@
-package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
+package io.github.orionlibs.orion_llm4j_llama_inference.model.llama;
 
 import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
 import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;

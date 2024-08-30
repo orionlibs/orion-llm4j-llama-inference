@@ -11,7 +11,6 @@ import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGeneratio
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
 import io.github.orionlibs.orion_llm4j_llama_inference.model.LlamaModelLoader;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.SimpleLlamaProcessor;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidMaximumTokensOptionException;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidUserPromptException;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.LLMOptionsBuilder;

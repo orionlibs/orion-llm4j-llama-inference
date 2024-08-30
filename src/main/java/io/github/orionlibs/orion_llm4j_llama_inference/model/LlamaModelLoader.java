@@ -8,7 +8,6 @@ import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.RotaryPositionEmbeddings;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.SimpleLlamaProcessor;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;

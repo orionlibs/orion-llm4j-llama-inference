@@ -1,12 +1,12 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
-import io.github.orionlibs.orion_llm4j_inference.core.Configuration;
-import io.github.orionlibs.orion_llm4j_inference.core.State;
+import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
+import io.github.orionlibs.orion_llm4j_inference.core.token.TokenGenerationState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.ArraySimpleFloatTensor;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
 import java.util.stream.Stream;
 
-public final class SimpleState extends State
+public final class SimpleTokenGenerationState extends TokenGenerationState
 {
     // current wave of activations
     public final SimpleFloatTensor x; // activation at current time stamp (dim,)
@@ -24,7 +24,7 @@ public final class SimpleState extends State
     public final SimpleFloatTensor[] valueCache; // (n_layer, seq_len, kv_dim)
 
 
-    public SimpleState(Configuration config)
+    public SimpleTokenGenerationState(LLMConfiguration config)
     {
         this.x = ArraySimpleFloatTensor.allocate(config.dim);
         this.xb = ArraySimpleFloatTensor.allocate(config.dim);

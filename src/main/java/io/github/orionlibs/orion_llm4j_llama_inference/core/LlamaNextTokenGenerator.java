@@ -1,10 +1,10 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
-import io.github.orionlibs.orion_llm4j_inference.core.Configuration;
-import io.github.orionlibs.orion_llm4j_inference.core.LLMProcessor;
-import io.github.orionlibs.orion_llm4j_inference.core.NextTokenGenerator;
-import io.github.orionlibs.orion_llm4j_inference.core.State;
-import io.github.orionlibs.orion_llm4j_inference.core.Weights;
+import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
+import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMInferencer;
+import io.github.orionlibs.orion_llm4j_inference.core.inference.NextTokenGenerator;
+import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
+import io.github.orionlibs.orion_llm4j_inference.core.token.TokenGenerationState;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Parallel;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.tensor.SimpleFloatTensor;
 import java.nio.FloatBuffer;
@@ -25,11 +25,11 @@ class LlamaNextTokenGenerator implements NextTokenGenerator
 
 
     @Override
-    public SimpleFloatTensor generate(LLMProcessor model, State state, int token, int position)
+    public SimpleFloatTensor generate(LLMInferencer model, TokenGenerationState state, int token, int position)
     {
-        SimpleState simpleState = (SimpleState)state;
+        SimpleTokenGenerationState simpleState = (SimpleTokenGenerationState)state;
         // a few convenience variables
-        Configuration config = model.getConfiguration();
+        LLMConfiguration config = model.getConfiguration();
         Weights weights = model.getWeights();
         int dim = config.dim;
         int headSize = config.headSize;

@@ -1,8 +1,9 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.core;
 
-import io.github.orionlibs.orion_llm4j_inference.core.Tokenizer;
-import io.github.orionlibs.orion_llm4j_inference.core.Vocabulary;
+import io.github.orionlibs.orion_llm4j_inference.core.model.Vocabulary;
+import io.github.orionlibs.orion_llm4j_inference.core.token.Tokenizer;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
+import io.github.orionlibs.orion_string.StringsService;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,12 +39,14 @@ public class SimpleTokenizer implements Tokenizer
     }
 
 
+    @Override
     public Map<String, Integer> getSpecialTokens()
     {
         return specialTokens;
     }
 
 
+    @Override
     public boolean isSpecialToken(int tokenIndex)
     {
         return specialTokens.containsValue(tokenIndex);
@@ -68,18 +71,19 @@ public class SimpleTokenizer implements Tokenizer
 
     private int[] encodeImpl(String text)
     {
-        return encode(text, Set.of()).stream().mapToInt(i -> i).toArray();
+        return encodeSpecialTokens(text, Set.of()).stream().mapToInt(i -> i).toArray();
     }
 
 
     /**
-     * Unlike {@link #encodeOrdinary(String)}, this function handles special tokens.
+     * Unlike {@link #encodeOrdinaryTokens(String)}, this function handles special tokens.
      * allowed_special: can be "all"|"none"|"none_raise" or a custom set of special tokens
      * if none_raise, then an error is raised if any special token is encountered in text
      * this is the default tiktoken behavior right now as well
      * any other behavior is either annoying, or a major footgun.
      */
-    public List<Integer> encode(String text, Set<String> allowedSpecial)
+    @Override
+    public List<Integer> encodeSpecialTokens(String text, Set<String> allowedSpecial)
     {
         // decode the user desire w.r.t. handling of special tokens
         Set<String> special = allowedSpecial;
@@ -87,7 +91,7 @@ public class SimpleTokenizer implements Tokenizer
         if(special.isEmpty())
         {
             // shortcut: if no special tokens, just use the ordinary encoding
-            return encodeOrdinary(text);
+            return encodeOrdinaryTokens(text);
         }
         // otherwise, we have to be careful with potential special tokens in text
         // we handle special tokens by splitting the text
@@ -112,7 +116,7 @@ public class SimpleTokenizer implements Tokenizer
             else
             {
                 // this is an ordinary sequence, encode it normally
-                ids.addAll(encodeOrdinary(part));
+                ids.addAll(encodeOrdinaryTokens(part));
             }
         }
         return ids;
@@ -122,15 +126,16 @@ public class SimpleTokenizer implements Tokenizer
     /**
      * Encoding that ignores any special tokens.
      */
-    public List<Integer> encodeOrdinary(String text)
+    @Override
+    public List<Integer> encodeOrdinaryTokens(String text)
     {
         // split text into chunks of text by categories defined in regex pattern
-        List<String> textChunks = Tokenizer.findAll(compiledPattern, text);
+        List<String> textChunks = StringsService.findAll(compiledPattern, text);
         // all chunks of text are encoded separately, then results are joined
         List<Integer> ids = new ArrayList<>();
         for(String chunk : textChunks)
         {
-            List<Integer> chunkIds = encodeChunk(chunk);
+            List<Integer> chunkIds = getTokenIDs(chunk);
             ids.addAll(chunkIds);
         }
         return ids;
@@ -149,7 +154,8 @@ public class SimpleTokenizer implements Tokenizer
     }
 
 
-    public List<Integer> encodeChunk(String chunk)
+    @Override
+    public List<Integer> getTokenIDs(String chunk)
     {
         // return the token ids
         // let's begin. first, convert all bytes to integers in range 0..255
@@ -174,13 +180,14 @@ public class SimpleTokenizer implements Tokenizer
             }
             // otherwise let's merge the best pair (lowest merge index)
             int idx = this.merges.get(pair);
-            ids = merge(ids, pair, idx);
+            ids = mergeTokens(ids, pair, idx);
         }
         return ids;
     }
 
 
-    public List<Integer> merge(List<Integer> ids, Pair<Integer, Integer> pair, int idx)
+    @Override
+    public List<Integer> mergeTokens(List<Integer> ids, Pair<Integer, Integer> pair, int idx)
     {
         List<Integer> newids = new ArrayList<>();
         int i = 0;
@@ -202,7 +209,8 @@ public class SimpleTokenizer implements Tokenizer
     }
 
 
-    public String decodeImpl(List<Integer> tokens)
+    @Override
+    public String decodeTokens(List<Integer> tokens)
     {
         StringBuilder sb = new StringBuilder();
         for(int token : tokens)
@@ -214,13 +222,14 @@ public class SimpleTokenizer implements Tokenizer
     }
 
 
-    static final Map<Integer, Integer> BYTE_ENCODER = Tokenizer.bytesToUnicode();
+    static final Map<Integer, Integer> BYTE_ENCODER = StringsService.convertCharactersToUnicode();
     static final Map<Integer, Integer> BYTE_DECODER = BYTE_ENCODER.entrySet()
                     .stream()
                     .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 
 
-    public int[] encode(String text)
+    @Override
+    public int[] encodeSpecialTokens(String text)
     {
         StringBuilder sb = new StringBuilder();
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
@@ -232,15 +241,17 @@ public class SimpleTokenizer implements Tokenizer
     }
 
 
+    @Override
     public List<Integer> encodeAsList(String text)
     {
-        return Arrays.stream(encode(text)).boxed().toList();
+        return Arrays.stream(encodeSpecialTokens(text)).boxed().toList();
     }
 
 
+    @Override
     public String decode(List<Integer> tokens)
     {
-        String decoded = decodeImpl(tokens);
+        String decoded = decodeTokens(tokens);
         int[] decodedBytesAsInts = decoded.codePoints().map(BYTE_DECODER::get).toArray();
         byte[] rawBytes = new byte[decodedBytesAsInts.length];
         for(int i = 0; i < decoded.length(); i++)

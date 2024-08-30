@@ -1,14 +1,14 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
 
-import io.github.orionlibs.orion_llm4j_inference.core.Configuration;
-import io.github.orionlibs.orion_llm4j_inference.core.Vocabulary;
-import io.github.orionlibs.orion_llm4j_inference.core.Weights;
+import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
+import io.github.orionlibs.orion_llm4j_inference.core.model.Vocabulary;
+import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
 import io.github.orionlibs.orion_llm4j_inference.core.gguf.GGUFTensorEntry;
 import io.github.orionlibs.orion_llm4j_inference.core.utils.Pair;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.RotaryPositionEmbeddings;
-import io.github.orionlibs.orion_llm4j_llama_inference.models.SimpleModelLoader;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.gguf.GGUFModel;
+import io.github.orionlibs.orion_llm4j_llama_inference.models.SimpleModelLoader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Path;
@@ -42,7 +42,7 @@ public class LlamaSimpleModelLoader extends SimpleModelLoader
         {
             contextLength = modelContextLength;
         }
-        Configuration config = new Configuration(
+        LLMConfiguration config = new LLMConfiguration(
                         (int)metadata.get("llama.embedding_length"),
                         (int)metadata.get("llama.feed_forward_length"),
                         (int)metadata.get("llama.block_count"),

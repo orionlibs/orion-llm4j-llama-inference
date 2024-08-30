@@ -1,8 +1,8 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
 
-import io.github.orionlibs.orion_llm4j_inference.core.ChatFormat;
-import io.github.orionlibs.orion_llm4j_inference.core.Message;
-import io.github.orionlibs.orion_llm4j_inference.core.Role;
+import io.github.orionlibs.orion_llm4j_inference.core.inference.ChatFormat;
+import io.github.orionlibs.orion_llm4j_inference.core.io.LLMRequest;
+import io.github.orionlibs.orion_llm4j_inference.options.Role;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class LlamaChatFormat extends ChatFormat
 
 
     @Override
-    public List<Integer> encodeHeader(Message message)
+    public List<Integer> encodeHeader(LLMRequest message)
     {
         List<Integer> tokens = new ArrayList<>();
         tokens.add(startHeader);
@@ -54,7 +54,7 @@ public class LlamaChatFormat extends ChatFormat
 
 
     @Override
-    public List<Integer> encodeMessage(Message message)
+    public List<Integer> encodeMessage(LLMRequest message)
     {
         List<Integer> tokens = this.encodeHeader(message);
         tokens.addAll(this.tokenizer.encodeAsList(message.content().strip()));
@@ -63,18 +63,18 @@ public class LlamaChatFormat extends ChatFormat
     }
 
 
-    public List<Integer> encodeDialogPrompt(boolean appendAssistantTurn, List<Message> dialog)
+    public List<Integer> encodeDialogPrompt(boolean appendAssistantTurn, List<LLMRequest> dialog)
     {
         List<Integer> tokens = new ArrayList<>();
         tokens.add(beginOfText);
-        for(Message message : dialog)
+        for(LLMRequest message : dialog)
         {
             tokens.addAll(this.encodeMessage(message));
         }
         if(appendAssistantTurn)
         {
             // Add the start of an assistant message for the model to complete.
-            tokens.addAll(this.encodeHeader(new Message(Role.ASSISTANT, "")));
+            tokens.addAll(this.encodeHeader(new LLMRequest(Role.ASSISTANT, "")));
         }
         return tokens;
     }

@@ -1,36 +1,30 @@
 package io.github.orionlibs.orion_llm4j_llama_inference.models.llama;
 
-import io.github.orionlibs.orion_llm4j_inference.core.Configuration;
-import io.github.orionlibs.orion_llm4j_inference.core.Weights;
+import io.github.orionlibs.orion_llm4j_inference.core.inference.LLMConfiguration;
+import io.github.orionlibs.orion_llm4j_inference.core.model.Weights;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleLLMProcessor;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleState;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGenerationState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenizer;
 
 public final class SimpleLlamaProcessor extends SimpleLLMProcessor
 {
-    public SimpleLlamaProcessor(Configuration configuration, SimpleTokenizer tokenizer, Weights weights)
+    public SimpleLlamaProcessor(LLMConfiguration configuration, SimpleTokenizer tokenizer, Weights weights)
     {
         super(configuration, tokenizer, weights);
     }
 
 
-    @Override
-    public SimpleState createNewState()
+    public SimpleTokenGenerationState createNewState()
     {
-        SimpleState state = new SimpleState(configuration);
-        state.latestToken = tokenizer.getSpecialTokens().get("<|begin_of_text|>");
+        SimpleTokenGenerationState state = new SimpleTokenGenerationState(getConfiguration());
+        state.latestToken = getTokenizer().getSpecialTokens().get("<|begin_of_text|>");
         return state;
     }
 
 
-    public Configuration getConfiguration()
-    {
-        return configuration;
-    }
-
-
+    @Override
     public SimpleTokenizer getTokenizer()
     {
-        return (SimpleTokenizer)tokenizer;
+        return (SimpleTokenizer)super.getTokenizer();
     }
 }

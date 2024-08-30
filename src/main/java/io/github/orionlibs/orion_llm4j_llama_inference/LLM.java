@@ -1,13 +1,13 @@
 package io.github.orionlibs.orion_llm4j_llama_inference;
 
 import io.github.orionlibs.orion_llm4j_inference.config.ConfigurationService;
-import io.github.orionlibs.orion_llm4j_inference.core.ChatFormat;
-import io.github.orionlibs.orion_llm4j_inference.core.Message;
-import io.github.orionlibs.orion_llm4j_inference.core.Response;
-import io.github.orionlibs.orion_llm4j_inference.core.Role;
+import io.github.orionlibs.orion_llm4j_inference.core.inference.ChatFormat;
+import io.github.orionlibs.orion_llm4j_inference.core.io.LLMRequest;
+import io.github.orionlibs.orion_llm4j_inference.core.io.LLMResponse;
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleState;
+import io.github.orionlibs.orion_llm4j_inference.options.Role;
+import io.github.orionlibs.orion_llm4j_llama_inference.core.SimpleTokenGenerationState;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.models.llama.LlamaSimpleModelLoader;
@@ -58,31 +58,31 @@ public class LLM
     }
 
 
-    public Response runLLM(String systemPrompt, String userPrompt, int maximumTokensToProduce) throws InvalidMaximumTokensOptionException, InvalidUserPromptException
+    public LLMResponse runLLM(String systemPrompt, String userPrompt, int maximumTokensToProduce) throws InvalidMaximumTokensOptionException, InvalidUserPromptException
     {
         maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
         userPromptValidator.isValidWithException(userPrompt);
-        return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
+        return runPrompt(model, sampler, systemPrompt, userPrompt, maximumTokensToProduce);
     }
 
 
-    public Response runLLM(String optionKeyToAdd, Object optionValueToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException, InvalidMaximumTokensOptionException, InvalidUserPromptException
+    public LLMResponse runLLM(String optionKeyToAdd, Object optionValueToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException, InvalidMaximumTokensOptionException, InvalidUserPromptException
     {
         options.add(optionKeyToAdd, optionValueToAdd);
         maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
         userPromptValidator.isValidWithException(userPrompt);
         reloadModelIfOptionsChanged();
-        return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
+        return runPrompt(model, sampler, systemPrompt, userPrompt, maximumTokensToProduce);
     }
 
 
-    public Response runLLM(Map<String, Object> optionsToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException, InvalidMaximumTokensOptionException, InvalidUserPromptException
+    public LLMResponse runLLM(Map<String, Object> optionsToAdd, String systemPrompt, String userPrompt, int maximumTokensToProduce) throws IOException, InvalidMaximumTokensOptionException, InvalidUserPromptException
     {
         options.add(optionsToAdd);
         maximumTokenValidator.isValidWithException(options, maximumTokensToProduce);
         userPromptValidator.isValidWithException(userPrompt);
         reloadModelIfOptionsChanged();
-        return runPrompt(model, sampler, options, systemPrompt, userPrompt, maximumTokensToProduce);
+        return runPrompt(model, sampler, systemPrompt, userPrompt, maximumTokensToProduce);
     }
 
 
@@ -116,20 +116,20 @@ public class LLM
     }
 
 
-    private Response runPrompt(SimpleLlamaProcessor model, Sampler sampler, LLMOptions options, String systemPrompt, String userPrompt, int maximumTokensToProduce)
+    private LLMResponse runPrompt(SimpleLlamaProcessor model, Sampler sampler, String systemPrompt, String userPrompt, int maximumTokensToProduce)
     {
-        SimpleState state = model.createNewState();
+        SimpleTokenGenerationState state = model.createNewState();
         ChatFormat chatFormat = new LlamaChatFormat(model.getTokenizer());
         List<Integer> promptTokens = new ArrayList<>();
         promptTokens.add(chatFormat.getBeginOfText());
         if(systemPrompt != null)
         {
-            promptTokens.addAll(chatFormat.encodeMessage(new Message(Role.SYSTEM, systemPrompt)));
+            promptTokens.addAll(chatFormat.encodeMessage(new LLMRequest(Role.SYSTEM, systemPrompt)));
         }
-        promptTokens.addAll(chatFormat.encodeMessage(new Message(Role.USER, userPrompt)));
-        promptTokens.addAll(chatFormat.encodeHeader(new Message(Role.ASSISTANT, "")));
+        promptTokens.addAll(chatFormat.encodeMessage(new LLMRequest(Role.USER, userPrompt)));
+        promptTokens.addAll(chatFormat.encodeHeader(new LLMRequest(Role.ASSISTANT, "")));
         Set<Integer> stopTokens = chatFormat.getStopTokens();
-        Response response = model.generateTokens(model, state, 0, promptTokens, stopTokens, maximumTokensToProduce, sampler, token -> {
+        LLMResponse response = model.generateTokens(state, 0, promptTokens, stopTokens, maximumTokensToProduce, sampler, token -> {
             if(!model.getTokenizer().isSpecialToken(token))
             {
                 System.out.print(model.getTokenizer().decode(List.of(token)));

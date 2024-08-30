@@ -19,16 +19,16 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 @TestInstance(Lifecycle.PER_CLASS)
 //@Execution(ExecutionMode.CONCURRENT)
 //@RunWith(JUnitPlatform.class)
-public class LLMTest
+public class LlamaLLMTest
 {
     //@Autowired
-    private LLM llm;
+    private LlamaLLM llm;
 
 
     @BeforeEach
     void setUp() throws IOException
     {
-        llm = new LLM();
+        llm = new LlamaLLM();
     }
 
 
@@ -46,7 +46,7 @@ public class LLMTest
     @Disabled
     void test_book() throws IOException
     {
-        InputStream defaultConfigStream = LLM.class.getResourceAsStream("/book1.txt");
+        InputStream defaultConfigStream = LlamaLLM.class.getResourceAsStream("/book1.txt");
         String book = IOUtils.toString(defaultConfigStream);
         //ConfigurationService.updateProp("orion-llm4j-llama-inference.maximum.tokens.to.produce", "1048576");
         LLMResponse response = llm.runLLM("Answer in no more than 50 words. Summarise the given book", book, 512);

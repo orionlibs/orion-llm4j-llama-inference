@@ -1,14 +1,9 @@
 package io.github.orionlibs.orion_llm4j_llama_inference;
 
 import io.github.orionlibs.orion_llm4j_inference.config.ConfigurationService;
-import io.github.orionlibs.orion_llm4j_inference.core.inference.ChatFormat;
-import io.github.orionlibs.orion_llm4j_inference.core.io.LLMRequest;
 import io.github.orionlibs.orion_llm4j_inference.core.io.LLMResponse;
 import io.github.orionlibs.orion_llm4j_inference.core.sampler.Sampler;
 import io.github.orionlibs.orion_llm4j_inference.options.LLMOptions;
-import io.github.orionlibs.orion_llm4j_inference.options.Role;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.LlamaTokenGenerationState;
-import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaChatFormat;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.inference.LlamaLLMInferencer;
 import io.github.orionlibs.orion_llm4j_llama_inference.core.sampler.SimpleSamplerSelector;
 import io.github.orionlibs.orion_llm4j_llama_inference.model.LlamaModelLoader;
@@ -17,16 +12,15 @@ import io.github.orionlibs.orion_llm4j_llama_inference.options.InvalidUserPrompt
 import io.github.orionlibs.orion_llm4j_llama_inference.options.LLMOptionsBuilder;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.MaximumTokenValidator;
 import io.github.orionlibs.orion_llm4j_llama_inference.options.UserPromptValidator;
+import io.github.orionlibs.orion_task_runner.OrionJobService;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
-public class LLM
+public class LlamaLLM
 {
     private static final String FEATURE_CONFIGURATION_FILE = "/io/github/orionlibs/orion_llm4j_llama_inference/configuration/orion-feature-configuration.prop";
     private LLMOptions options;
@@ -37,19 +31,19 @@ public class LLM
     private UserPromptValidator userPromptValidator;
 
 
-    public LLM() throws IOException
+    public LlamaLLM() throws IOException
     {
         this.maximumTokenValidator = new MaximumTokenValidator();
         this.userPromptValidator = new UserPromptValidator();
-        InputStream defaultConfigStream = LLM.class.getResourceAsStream(FEATURE_CONFIGURATION_FILE);
+        InputStream defaultConfigStream = LlamaLLM.class.getResourceAsStream(FEATURE_CONFIGURATION_FILE);
         ConfigurationService.registerConfiguration(defaultConfigStream);
         buildLLMOptions();
     }
 
 
-    public LLM(InputStream customConfigStream) throws IOException
+    public LlamaLLM(InputStream customConfigStream) throws IOException
     {
-        InputStream defaultConfigStream = LLM.class.getResourceAsStream(FEATURE_CONFIGURATION_FILE);
+        InputStream defaultConfigStream = LlamaLLM.class.getResourceAsStream(FEATURE_CONFIGURATION_FILE);
         ConfigurationService.registerConfiguration(defaultConfigStream);
         ConfigurationService.registerConfiguration(customConfigStream);
         buildLLMOptions();
@@ -119,29 +113,18 @@ public class LLM
 
     private LLMResponse runPrompt(LlamaLLMInferencer model, Sampler sampler, String systemPrompt, String userPrompt, int maximumTokensToProduce)
     {
-        LlamaTokenGenerationState state = model.createNewState();
-        ChatFormat chatFormat = new LlamaChatFormat(model.getTokenizer());
-        List<Integer> promptTokens = new ArrayList<>();
-        promptTokens.add(chatFormat.getBeginOfText());
-        if(systemPrompt != null)
+        LlamaLLMRunner runner = new LlamaLLMRunner(model, sampler, systemPrompt, userPrompt, maximumTokensToProduce);
+        try
         {
-            promptTokens.addAll(chatFormat.encodeMessage(new LLMRequest(Role.SYSTEM, systemPrompt)));
+            return new OrionJobService<LLMResponse>().runJobAndGetResult(() -> runner.runPrompt());
         }
-        promptTokens.addAll(chatFormat.encodeMessage(new LLMRequest(Role.USER, userPrompt)));
-        promptTokens.addAll(chatFormat.encodeHeader(new LLMRequest(Role.ASSISTANT, "")));
-        Set<Integer> stopTokens = chatFormat.getStopTokens();
-        LLMResponse response = model.generateTokens(state, 0, promptTokens, stopTokens, maximumTokensToProduce, sampler, token -> {
-            if(!model.getTokenizer().isSpecialToken(token))
-            {
-                System.out.print(model.getTokenizer().decode(List.of(token)));
-            }
-        });
-        if(!response.getResponseTokens().isEmpty() && stopTokens.contains(response.getResponseTokens().getLast()))
+        catch(ExecutionException e)
         {
-            response.getResponseTokens().removeLast();
+            throw new RuntimeException(e);
         }
-        String responseText = model.getTokenizer().decode(response.getResponseTokens());
-        response.appendContent(responseText);
-        return response;
+        catch(InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 }

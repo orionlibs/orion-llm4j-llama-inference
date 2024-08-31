@@ -12,6 +12,7 @@ public final class LLMOptionsBuilder
         options.add("randomness", ConfigurationService.getFloatProp("orion-llm4j-llama-inference.randomness"));
         options.add("maximumTokensToProduce", ConfigurationService.getIntegerProp("orion-llm4j-llama-inference.maximum.tokens.to.produce"));
         options.add("interactiveChat", ConfigurationService.getBooleanProp("orion-llm4j-llama-inference.interactive.chat"));
+        options.add("asynchronousInference", ConfigurationService.getBooleanProp("orion-llm4j-llama-inference.asynchronous.inference"));
         options.add("llmModelPath", ConfigurationService.getProp("orion-llm4j-llama-inference.llm.model.path"));
         return options;
     }

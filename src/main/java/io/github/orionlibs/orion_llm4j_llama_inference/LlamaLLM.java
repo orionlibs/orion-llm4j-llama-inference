@@ -114,17 +114,24 @@ public class LlamaLLM
     private LLMResponse runPrompt(LlamaLLMInferencer model, Sampler sampler, String systemPrompt, String userPrompt, int maximumTokensToProduce)
     {
         LlamaLLMRunner runner = new LlamaLLMRunner(model, sampler, systemPrompt, userPrompt, maximumTokensToProduce);
-        try
+        if((boolean)options.getOptionValue("asynchronousInference"))
         {
-            return new OrionJobService<LLMResponse>().runJobAndGetResult(() -> runner.runPrompt());
+            try
+            {
+                return new OrionJobService<LLMResponse>().runJobAndGetResult(() -> runner.runPrompt());
+            }
+            catch(ExecutionException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch(InterruptedException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
-        catch(ExecutionException e)
+        else
         {
-            throw new RuntimeException(e);
-        }
-        catch(InterruptedException e)
-        {
-            throw new RuntimeException(e);
+            return runner.runPrompt();
         }
     }
 }
